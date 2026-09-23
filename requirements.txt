@@ -6,4 +6,5 @@ plotly
 shapely
 pyproj
 pyogrio
+scipy
 reportlab
