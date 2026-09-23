@@ -1,0 +1,28 @@
+species,common_name,first_year,first_status,latest_year,latest_status,first_severity,latest_severity,severity_change
+Aonyx cinereus,Asian Small-clawed Otter,1996,NT,2021,VU,1,2,1
+Bos gaurus,Gaur,1986,VU,2016,VU,2,2,0
+Cuon alpinus,Dhole,1986,VU,2015,EN,2,3,1
+Elephas maximus,Asian Elephant,1986,EN,2020,EN,3,3,0
+Feroculus feroculus,Kelaart's Long-clawed Shrew,1996,EN,2020,EN,3,3,0
+Hipposideros hypophyllus,Kolar Leaf-nosed Bat,1996,NT,2016,CR,1,4,3
+Latidens salimalii,Salim Ali's Fruit Bat,1994,VU,2020,EN,2,3,1
+Loris lydekkerianus,Grey Slender Loris,2004,NT,2022,NT,1,1,0
+Macaca radiata,Bonnet Macaque,1996,LC,2020,VU,0,2,2
+Macaca silenus,Lion-tailed Macaque,1986,EN,2020,EN,3,3,0
+Manis crassicaudata,Indian Pangolin,1996,NT,2019,EN,1,3,2
+Martes gwatkinsii,Nilgiri Marten,1994,VU,2015,VU,2,2,0
+Melursus ursinus,Sloth Bear,1990,VU,2020,VU,2,2,0
+Mus famulus,Bonhote’s Mouse,1996,EN,2019,EN,3,3,0
+Nilgiritragus hylocrius,Nilgiri Tahr,1986,VU,2008,EN,2,3,1
+Panthera pardus,Leopard,1986,VU,2025,VU,2,2,0
+Panthera tigris,Tiger,1986,EN,2022,EN,3,3,0
+Prionailurus rubiginosus,Rusty-spotted Cat,2002,VU,2016,NT,2,1,-1
+Rattus satarae,Sahyadris Forest Rat,2008,VU,2016,VU,2,2,0
+Ratufa indica,Indian Giant Squirrel,1996,VU,2016,LC,2,0,-2
+Ratufa macroura,Sri Lankan Giant Squirrel,1996,VU,2019,NT,2,1,-1
+Rusa unicolor,Sambar,1996,LC,2015,VU,0,2,2
+Semnopithecus johnii,Nilgiri Langur,1986,VU,2020,VU,2,2,0
+Semnopithecus priam,Tufted Gray Langur,2020,NT,2020,NT,1,1,0
+Suncus dayi,Day's Shrew,1996,EN,2016,EN,3,3,0
+Tetracerus quadricornis,Four-horned Antelope,1994,VU,2017,VU,2,2,0
+Vandeleuria nilagirica,Nilgiri Long-tailed Tree Mouse,2008,EN,2016,EN,3,3,0

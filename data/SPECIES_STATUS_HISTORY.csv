@@ -1,0 +1,175 @@
+species,common_name,order,family,year_published,red_list_category,is_latest,status_standardized
+Aonyx cinereus,Asian Small-clawed Otter,CARNIVORA,MUSTELIDAE,1988,K,False,DD
+Aonyx cinereus,Asian Small-clawed Otter,CARNIVORA,MUSTELIDAE,1990,K,False,DD
+Aonyx cinereus,Asian Small-clawed Otter,CARNIVORA,MUSTELIDAE,1994,K,False,DD
+Aonyx cinereus,Asian Small-clawed Otter,CARNIVORA,MUSTELIDAE,1996,LR/nt,False,NT
+Aonyx cinereus,Asian Small-clawed Otter,CARNIVORA,MUSTELIDAE,1996,LR/nt,False,NT
+Aonyx cinereus,Asian Small-clawed Otter,CARNIVORA,MUSTELIDAE,2000,LR/nt,False,NT
+Aonyx cinereus,Asian Small-clawed Otter,CARNIVORA,MUSTELIDAE,2004,NT,False,NT
+Aonyx cinereus,Asian Small-clawed Otter,CARNIVORA,MUSTELIDAE,2008,VU,False,VU
+Aonyx cinereus,Asian Small-clawed Otter,CARNIVORA,MUSTELIDAE,2015,VU,False,VU
+Aonyx cinereus,Asian Small-clawed Otter,CARNIVORA,MUSTELIDAE,2021,VU,True,VU
+Aonyx cinereus,Asian Small-clawed Otter,CARNIVORA,MUSTELIDAE,2025,,True,
+Bos gaurus,Gaur,ARTIODACTYLA,BOVIDAE,1965,,False,
+Bos gaurus,Gaur,ARTIODACTYLA,BOVIDAE,1986,V,False,VU
+Bos gaurus,Gaur,ARTIODACTYLA,BOVIDAE,1988,V,False,VU
+Bos gaurus,Gaur,ARTIODACTYLA,BOVIDAE,1990,V,False,VU
+Bos gaurus,Gaur,ARTIODACTYLA,BOVIDAE,1994,V,False,VU
+Bos gaurus,Gaur,ARTIODACTYLA,BOVIDAE,1996,VU,False,VU
+Bos gaurus,Gaur,ARTIODACTYLA,BOVIDAE,2000,VU,False,VU
+Bos gaurus,Gaur,ARTIODACTYLA,BOVIDAE,2008,VU,False,VU
+Bos gaurus,Gaur,ARTIODACTYLA,BOVIDAE,2016,VU,True,VU
+Cuon alpinus,Dhole,CARNIVORA,CANIDAE,1986,V,False,VU
+Cuon alpinus,Dhole,CARNIVORA,CANIDAE,1988,V,False,VU
+Cuon alpinus,Dhole,CARNIVORA,CANIDAE,1990,V,False,VU
+Cuon alpinus,Dhole,CARNIVORA,CANIDAE,1994,V,False,VU
+Cuon alpinus,Dhole,CARNIVORA,CANIDAE,1996,VU,False,VU
+Cuon alpinus,Dhole,CARNIVORA,CANIDAE,2004,EN,False,EN
+Cuon alpinus,Dhole,CARNIVORA,CANIDAE,2008,EN,False,EN
+Cuon alpinus,Dhole,CARNIVORA,CANIDAE,2015,EN,True,EN
+Elephas maximus,Asian Elephant,PROBOSCIDEA,ELEPHANTIDAE,1965,,False,
+Elephas maximus,Asian Elephant,PROBOSCIDEA,ELEPHANTIDAE,1986,E,False,EN
+Elephas maximus,Asian Elephant,PROBOSCIDEA,ELEPHANTIDAE,1988,E,False,EN
+Elephas maximus,Asian Elephant,PROBOSCIDEA,ELEPHANTIDAE,1990,E,False,EN
+Elephas maximus,Asian Elephant,PROBOSCIDEA,ELEPHANTIDAE,1994,E,False,EN
+Elephas maximus,Asian Elephant,PROBOSCIDEA,ELEPHANTIDAE,1996,EN,False,EN
+Elephas maximus,Asian Elephant,PROBOSCIDEA,ELEPHANTIDAE,2008,EN,False,EN
+Elephas maximus,Asian Elephant,PROBOSCIDEA,ELEPHANTIDAE,2020,EN,True,EN
+Feroculus feroculus,Kelaart's Long-clawed Shrew,EULIPOTYPHLA,SORICIDAE,1996,EN,False,EN
+Feroculus feroculus,Kelaart's Long-clawed Shrew,EULIPOTYPHLA,SORICIDAE,2008,EN,False,EN
+Feroculus feroculus,Kelaart's Long-clawed Shrew,EULIPOTYPHLA,SORICIDAE,2020,EN,True,EN
+Hipposideros hypophyllus,Kolar Leaf-nosed Bat,CHIROPTERA,HIPPOSIDERIDAE,1996,LR/nt,False,NT
+Hipposideros hypophyllus,Kolar Leaf-nosed Bat,CHIROPTERA,HIPPOSIDERIDAE,2000,VU,False,VU
+Hipposideros hypophyllus,Kolar Leaf-nosed Bat,CHIROPTERA,HIPPOSIDERIDAE,2004,EN,False,EN
+Hipposideros hypophyllus,Kolar Leaf-nosed Bat,CHIROPTERA,HIPPOSIDERIDAE,2008,EN,False,EN
+Hipposideros hypophyllus,Kolar Leaf-nosed Bat,CHIROPTERA,HIPPOSIDERIDAE,2016,CR,True,CR
+Latidens salimalii,Salim Ali's Fruit Bat,CHIROPTERA,PTEROPODIDAE,1988,K,False,DD
+Latidens salimalii,Salim Ali's Fruit Bat,CHIROPTERA,PTEROPODIDAE,1990,K,False,DD
+Latidens salimalii,Salim Ali's Fruit Bat,CHIROPTERA,PTEROPODIDAE,1994,R,False,VU
+Latidens salimalii,Salim Ali's Fruit Bat,CHIROPTERA,PTEROPODIDAE,1996,CR,False,CR
+Latidens salimalii,Salim Ali's Fruit Bat,CHIROPTERA,PTEROPODIDAE,2004,EN,False,EN
+Latidens salimalii,Salim Ali's Fruit Bat,CHIROPTERA,PTEROPODIDAE,2008,EN,False,EN
+Latidens salimalii,Salim Ali's Fruit Bat,CHIROPTERA,PTEROPODIDAE,2020,EN,True,EN
+Loris lydekkerianus,Grey Slender Loris,PRIMATES,LORISIDAE,2004,NT,False,NT
+Loris lydekkerianus,Grey Slender Loris,PRIMATES,LORISIDAE,2008,LC,False,LC
+Loris lydekkerianus,Grey Slender Loris,PRIMATES,LORISIDAE,2020,NT,False,NT
+Loris lydekkerianus,Grey Slender Loris,PRIMATES,LORISIDAE,2022,NT,True,NT
+Macaca radiata,Bonnet Macaque,PRIMATES,CERCOPITHECIDAE,1996,LR/lc,False,LC
+Macaca radiata,Bonnet Macaque,PRIMATES,CERCOPITHECIDAE,2000,LR/lc,False,LC
+Macaca radiata,Bonnet Macaque,PRIMATES,CERCOPITHECIDAE,2008,LC,False,LC
+Macaca radiata,Bonnet Macaque,PRIMATES,CERCOPITHECIDAE,2020,VU,True,VU
+Macaca silenus,Lion-tailed Macaque,PRIMATES,CERCOPITHECIDAE,1986,E,False,EN
+Macaca silenus,Lion-tailed Macaque,PRIMATES,CERCOPITHECIDAE,1988,E,False,EN
+Macaca silenus,Lion-tailed Macaque,PRIMATES,CERCOPITHECIDAE,1990,E,False,EN
+Macaca silenus,Lion-tailed Macaque,PRIMATES,CERCOPITHECIDAE,1994,V,False,VU
+Macaca silenus,Lion-tailed Macaque,PRIMATES,CERCOPITHECIDAE,1996,EN,False,EN
+Macaca silenus,Lion-tailed Macaque,PRIMATES,CERCOPITHECIDAE,2000,EN,False,EN
+Macaca silenus,Lion-tailed Macaque,PRIMATES,CERCOPITHECIDAE,2004,EN,False,EN
+Macaca silenus,Lion-tailed Macaque,PRIMATES,CERCOPITHECIDAE,2008,EN,False,EN
+Macaca silenus,Lion-tailed Macaque,PRIMATES,CERCOPITHECIDAE,2020,EN,True,EN
+Manis crassicaudata,Indian Pangolin,PHOLIDOTA,MANIDAE,1996,LR/nt,False,NT
+Manis crassicaudata,Indian Pangolin,PHOLIDOTA,MANIDAE,2008,NT,False,NT
+Manis crassicaudata,Indian Pangolin,PHOLIDOTA,MANIDAE,2014,EN,False,EN
+Manis crassicaudata,Indian Pangolin,PHOLIDOTA,MANIDAE,2019,EN,True,EN
+Martes gwatkinsii,Nilgiri Marten,CARNIVORA,MUSTELIDAE,1988,I,False,DD
+Martes gwatkinsii,Nilgiri Marten,CARNIVORA,MUSTELIDAE,1990,I,False,DD
+Martes gwatkinsii,Nilgiri Marten,CARNIVORA,MUSTELIDAE,1994,V,False,VU
+Martes gwatkinsii,Nilgiri Marten,CARNIVORA,MUSTELIDAE,1996,VU,False,VU
+Martes gwatkinsii,Nilgiri Marten,CARNIVORA,MUSTELIDAE,2000,VU,False,VU
+Martes gwatkinsii,Nilgiri Marten,CARNIVORA,MUSTELIDAE,2008,VU,False,VU
+Martes gwatkinsii,Nilgiri Marten,CARNIVORA,MUSTELIDAE,2015,VU,True,VU
+Martes gwatkinsii,Nilgiri Marten,CARNIVORA,MUSTELIDAE,2015,VU,False,VU
+Melursus ursinus,Sloth Bear,CARNIVORA,URSIDAE,1986,I,False,DD
+Melursus ursinus,Sloth Bear,CARNIVORA,URSIDAE,1988,I,False,DD
+Melursus ursinus,Sloth Bear,CARNIVORA,URSIDAE,1990,V,False,VU
+Melursus ursinus,Sloth Bear,CARNIVORA,URSIDAE,1994,V,False,VU
+Melursus ursinus,Sloth Bear,CARNIVORA,URSIDAE,1996,VU,False,VU
+Melursus ursinus,Sloth Bear,CARNIVORA,URSIDAE,2008,VU,False,VU
+Melursus ursinus,Sloth Bear,CARNIVORA,URSIDAE,2016,VU,False,VU
+Melursus ursinus,Sloth Bear,CARNIVORA,URSIDAE,2020,VU,True,VU
+Mus famulus,Bonhote’s Mouse,RODENTIA,MURIDAE,1996,EN,False,EN
+Mus famulus,Bonhote’s Mouse,RODENTIA,MURIDAE,2000,EN,False,EN
+Mus famulus,Bonhote’s Mouse,RODENTIA,MURIDAE,2008,EN,False,EN
+Mus famulus,Bonhote’s Mouse,RODENTIA,MURIDAE,2019,EN,True,EN
+Nilgiritragus hylocrius,Nilgiri Tahr,ARTIODACTYLA,BOVIDAE,1965,,False,
+Nilgiritragus hylocrius,Nilgiri Tahr,ARTIODACTYLA,BOVIDAE,1986,V,False,VU
+Nilgiritragus hylocrius,Nilgiri Tahr,ARTIODACTYLA,BOVIDAE,1988,V,False,VU
+Nilgiritragus hylocrius,Nilgiri Tahr,ARTIODACTYLA,BOVIDAE,1990,V,False,VU
+Nilgiritragus hylocrius,Nilgiri Tahr,ARTIODACTYLA,BOVIDAE,1994,V,False,VU
+Nilgiritragus hylocrius,Nilgiri Tahr,ARTIODACTYLA,BOVIDAE,1996,EN,False,EN
+Nilgiritragus hylocrius,Nilgiri Tahr,ARTIODACTYLA,BOVIDAE,2000,EN,False,EN
+Nilgiritragus hylocrius,Nilgiri Tahr,ARTIODACTYLA,BOVIDAE,2008,EN,True,EN
+Panthera pardus,Leopard,CARNIVORA,FELIDAE,1986,V,False,VU
+Panthera pardus,Leopard,CARNIVORA,FELIDAE,1988,T,False,VU
+Panthera pardus,Leopard,CARNIVORA,FELIDAE,1990,T,False,VU
+Panthera pardus,Leopard,CARNIVORA,FELIDAE,1996,LR/lc,False,LC
+Panthera pardus,Leopard,CARNIVORA,FELIDAE,2002,LC,False,LC
+Panthera pardus,Leopard,CARNIVORA,FELIDAE,2008,NT,False,NT
+Panthera pardus,Leopard,CARNIVORA,FELIDAE,2010,CR,True,CR
+Panthera pardus,Leopard,CARNIVORA,FELIDAE,2016,VU,False,VU
+Panthera pardus,Leopard,CARNIVORA,FELIDAE,2016,VU,False,VU
+Panthera pardus,Leopard,CARNIVORA,FELIDAE,2019,VU,False,VU
+Panthera pardus,Leopard,CARNIVORA,FELIDAE,2020,VU,False,VU
+Panthera pardus,Leopard,CARNIVORA,FELIDAE,2023,VU,False,VU
+Panthera pardus,Leopard,CARNIVORA,FELIDAE,2024,VU,False,VU
+Panthera pardus,Leopard,CARNIVORA,FELIDAE,2025,VU,False,VU
+Panthera pardus,Leopard,CARNIVORA,FELIDAE,2025,VU,True,VU
+Panthera tigris,Tiger,CARNIVORA,FELIDAE,1986,E,False,EN
+Panthera tigris,Tiger,CARNIVORA,FELIDAE,1988,E,False,EN
+Panthera tigris,Tiger,CARNIVORA,FELIDAE,1990,E,False,EN
+Panthera tigris,Tiger,CARNIVORA,FELIDAE,1994,E,False,EN
+Panthera tigris,Tiger,CARNIVORA,FELIDAE,1996,EN,False,EN
+Panthera tigris,Tiger,CARNIVORA,FELIDAE,2002,EN,False,EN
+Panthera tigris,Tiger,CARNIVORA,FELIDAE,2008,EN,False,EN
+Panthera tigris,Tiger,CARNIVORA,FELIDAE,2010,EN,False,EN
+Panthera tigris,Tiger,CARNIVORA,FELIDAE,2010,RE,True,EX
+Panthera tigris,Tiger,CARNIVORA,FELIDAE,2011,EN,False,EN
+Panthera tigris,Tiger,CARNIVORA,FELIDAE,2015,EN,False,EN
+Panthera tigris,Tiger,CARNIVORA,FELIDAE,2022,EN,True,EN
+Prionailurus rubiginosus,Rusty-spotted Cat,CARNIVORA,FELIDAE,1988,K,False,DD
+Prionailurus rubiginosus,Rusty-spotted Cat,CARNIVORA,FELIDAE,1990,K,False,DD
+Prionailurus rubiginosus,Rusty-spotted Cat,CARNIVORA,FELIDAE,1994,K,False,DD
+Prionailurus rubiginosus,Rusty-spotted Cat,CARNIVORA,FELIDAE,1996,DD,False,DD
+Prionailurus rubiginosus,Rusty-spotted Cat,CARNIVORA,FELIDAE,2002,VU,False,VU
+Prionailurus rubiginosus,Rusty-spotted Cat,CARNIVORA,FELIDAE,2008,VU,False,VU
+Prionailurus rubiginosus,Rusty-spotted Cat,CARNIVORA,FELIDAE,2016,NT,True,NT
+Rattus satarae,Sahyadris Forest Rat,RODENTIA,MURIDAE,2008,VU,False,VU
+Rattus satarae,Sahyadris Forest Rat,RODENTIA,MURIDAE,2016,VU,True,VU
+Rattus satarae,Sahyadris Forest Rat,RODENTIA,MURIDAE,2016,VU,False,VU
+Ratufa indica,Indian Giant Squirrel,RODENTIA,SCIURIDAE,1996,VU,False,VU
+Ratufa indica,Indian Giant Squirrel,RODENTIA,SCIURIDAE,2008,NT,False,NT
+Ratufa indica,Indian Giant Squirrel,RODENTIA,SCIURIDAE,2010,LC,False,LC
+Ratufa indica,Indian Giant Squirrel,RODENTIA,SCIURIDAE,2016,LC,True,LC
+Ratufa macroura,Sri Lankan Giant Squirrel,RODENTIA,SCIURIDAE,1996,VU,False,VU
+Ratufa macroura,Sri Lankan Giant Squirrel,RODENTIA,SCIURIDAE,2008,NT,False,NT
+Ratufa macroura,Sri Lankan Giant Squirrel,RODENTIA,SCIURIDAE,2008,NT,False,NT
+Ratufa macroura,Sri Lankan Giant Squirrel,RODENTIA,SCIURIDAE,2017,NT,False,NT
+Ratufa macroura,Sri Lankan Giant Squirrel,RODENTIA,SCIURIDAE,2019,NT,True,NT
+Rusa unicolor,Sambar,ARTIODACTYLA,CERVIDAE,1996,LR/lc,False,LC
+Rusa unicolor,Sambar,ARTIODACTYLA,CERVIDAE,2008,VU,False,VU
+Rusa unicolor,Sambar,ARTIODACTYLA,CERVIDAE,2015,VU,True,VU
+Rusa unicolor,Sambar,ARTIODACTYLA,CERVIDAE,2015,VU,False,VU
+Semnopithecus johnii,Nilgiri Langur,PRIMATES,CERCOPITHECIDAE,1986,V,False,VU
+Semnopithecus johnii,Nilgiri Langur,PRIMATES,CERCOPITHECIDAE,1988,E,False,EN
+Semnopithecus johnii,Nilgiri Langur,PRIMATES,CERCOPITHECIDAE,1990,E,False,EN
+Semnopithecus johnii,Nilgiri Langur,PRIMATES,CERCOPITHECIDAE,1994,I,False,DD
+Semnopithecus johnii,Nilgiri Langur,PRIMATES,CERCOPITHECIDAE,1996,VU,False,VU
+Semnopithecus johnii,Nilgiri Langur,PRIMATES,CERCOPITHECIDAE,1996,VU,False,VU
+Semnopithecus johnii,Nilgiri Langur,PRIMATES,CERCOPITHECIDAE,2000,VU,False,VU
+Semnopithecus johnii,Nilgiri Langur,PRIMATES,CERCOPITHECIDAE,2004,VU,False,VU
+Semnopithecus johnii,Nilgiri Langur,PRIMATES,CERCOPITHECIDAE,2008,VU,False,VU
+Semnopithecus johnii,Nilgiri Langur,PRIMATES,CERCOPITHECIDAE,2020,VU,True,VU
+Semnopithecus priam,Tufted Gray Langur,PRIMATES,CERCOPITHECIDAE,2020,NT,True,NT
+Suncus dayi,Day's Shrew,EULIPOTYPHLA,SORICIDAE,1996,EN,False,EN
+Suncus dayi,Day's Shrew,EULIPOTYPHLA,SORICIDAE,2000,VU,False,VU
+Suncus dayi,Day's Shrew,EULIPOTYPHLA,SORICIDAE,2008,EN,False,EN
+Suncus dayi,Day's Shrew,EULIPOTYPHLA,SORICIDAE,2016,EN,True,EN
+Suncus dayi,Day's Shrew,EULIPOTYPHLA,SORICIDAE,2016,EN,False,EN
+Tetracerus quadricornis,Four-horned Antelope,ARTIODACTYLA,BOVIDAE,1994,V,False,VU
+Tetracerus quadricornis,Four-horned Antelope,ARTIODACTYLA,BOVIDAE,1996,VU,False,VU
+Tetracerus quadricornis,Four-horned Antelope,ARTIODACTYLA,BOVIDAE,2003,VU,False,VU
+Tetracerus quadricornis,Four-horned Antelope,ARTIODACTYLA,BOVIDAE,2008,VU,False,VU
+Tetracerus quadricornis,Four-horned Antelope,ARTIODACTYLA,BOVIDAE,2017,VU,True,VU
+Vandeleuria nilagirica,Nilgiri Long-tailed Tree Mouse,RODENTIA,MURIDAE,2008,EN,False,EN
+Vandeleuria nilagirica,Nilgiri Long-tailed Tree Mouse,RODENTIA,MURIDAE,2016,EN,True,EN
+Vandeleuria nilagirica,Nilgiri Long-tailed Tree Mouse,RODENTIA,MURIDAE,2016,EN,False,EN

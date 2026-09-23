@@ -1,0 +1,30 @@
+species,common_name,year,from_status,to_status,severity_change
+Aonyx cinereus,Asian Small-clawed Otter,2008,NT,VU,1
+Cuon alpinus,Dhole,2004,VU,EN,1
+Hipposideros hypophyllus,Kolar Leaf-nosed Bat,2000,NT,VU,1
+Hipposideros hypophyllus,Kolar Leaf-nosed Bat,2004,VU,EN,1
+Hipposideros hypophyllus,Kolar Leaf-nosed Bat,2016,EN,CR,1
+Latidens salimalii,Salim Ali's Fruit Bat,1996,VU,CR,2
+Latidens salimalii,Salim Ali's Fruit Bat,2004,CR,EN,-1
+Loris lydekkerianus,Grey Slender Loris,2008,NT,LC,-1
+Loris lydekkerianus,Grey Slender Loris,2020,LC,NT,1
+Macaca radiata,Bonnet Macaque,2020,LC,VU,2
+Macaca silenus,Lion-tailed Macaque,1994,EN,VU,-1
+Macaca silenus,Lion-tailed Macaque,1996,VU,EN,1
+Manis crassicaudata,Indian Pangolin,2014,NT,EN,2
+Nilgiritragus hylocrius,Nilgiri Tahr,1996,VU,EN,1
+Panthera pardus,Leopard,1996,VU,LC,-2
+Panthera pardus,Leopard,2008,LC,NT,1
+Panthera pardus,Leopard,2010,NT,CR,3
+Panthera pardus,Leopard,2016,CR,VU,-2
+Panthera tigris,Tiger,2010,EN,EX,3
+Panthera tigris,Tiger,2011,EX,EN,-3
+Prionailurus rubiginosus,Rusty-spotted Cat,2016,VU,NT,-1
+Ratufa indica,Indian Giant Squirrel,2008,VU,NT,-1
+Ratufa indica,Indian Giant Squirrel,2010,NT,LC,-1
+Ratufa macroura,Sri Lankan Giant Squirrel,2008,VU,NT,-1
+Rusa unicolor,Sambar,2008,LC,VU,2
+Semnopithecus johnii,Nilgiri Langur,1988,VU,EN,1
+Semnopithecus johnii,Nilgiri Langur,1996,EN,VU,-1
+Suncus dayi,Day's Shrew,2000,EN,VU,-1
+Suncus dayi,Day's Shrew,2008,VU,EN,1
