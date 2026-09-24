@@ -654,6 +654,13 @@ pages = {
             title="Executive View",
             icon="🎯",
             url_path="executive-view"
+        ),
+
+        st.Page(
+            "pages/8_Forecast.py",
+            title="Forecast",
+            icon="📈",
+            url_path="forecast"
         )
 
     ]

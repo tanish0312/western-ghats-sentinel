@@ -437,6 +437,121 @@ st.html(
     """
 )
 
+# ============================================================
+# FEATURED CASE STUDY — KOLAR LEAF-NOSED BAT
+# ============================================================
+
+spotlight = history[
+    history[SPECIES] == "Hipposideros hypophyllus"
+].sort_values(YEAR)
+
+status_colors = {
+    "NT": "#D98A33",
+    "VU": "#C9762E",
+    "EN": "#B84A3A",
+    "CR": "#8B1E1E",
+}
+
+timeline_steps = "".join(
+    f"""
+    <div class="spotlight-step">
+        <div class="spotlight-dot" style="background:{status_colors.get(row[STATUS], '#999')}"></div>
+        <div class="spotlight-year">{int(row[YEAR])}</div>
+        <div class="spotlight-status" style="color:{status_colors.get(row[STATUS], '#999')}">{row[STATUS]}</div>
+    </div>
+    """
+    for _, row in spotlight.iterrows()
+)
+
+st.html(
+    f"""
+    <style>
+    .spotlight-card {{
+        margin: 30px 0 40px 0;
+        padding: 32px 36px;
+        border-radius: 22px;
+        background: linear-gradient(135deg, #1F4D36, #0b4a36);
+        color: white;
+        box-shadow: 0 8px 30px rgba(20,60,48,0.2);
+    }}
+    .spotlight-label {{
+        font-size: 12px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #dcc66d;
+        font-weight: 700;
+    }}
+    .spotlight-title {{
+        font-size: 28px;
+        font-weight: 800;
+        margin-top: 6px;
+    }}
+    .spotlight-sub {{
+        font-size: 14px;
+        color: #c9dad2;
+        font-style: italic;
+        margin-bottom: 18px;
+    }}
+    .spotlight-timeline {{
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin: 24px 0 20px 0;
+        flex-wrap: wrap;
+    }}
+    .spotlight-step {{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 60px;
+    }}
+    .spotlight-dot {{
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        margin-bottom: 6px;
+        border: 2px solid white;
+    }}
+    .spotlight-year {{
+        font-size: 12px;
+        color: #c9dad2;
+    }}
+    .spotlight-status {{
+        font-size: 15px;
+        font-weight: 800;
+        margin-top: 2px;
+    }}
+    .spotlight-narrative {{
+        font-size: 15px;
+        line-height: 1.7;
+        color: #e8f1ed;
+        max-width: 820px;
+    }}
+    </style>
+
+    <div class="spotlight-card">
+        <div class="spotlight-label">Featured Case Study</div>
+        <div class="spotlight-title">🦇 The Kolar Leaf-nosed Bat</div>
+        <div class="spotlight-sub">Hipposideros hypophyllus — endemic to a single cave system in Karnataka</div>
+
+        <div class="spotlight-timeline">
+            {timeline_steps}
+        </div>
+
+        <div class="spotlight-narrative">
+            In just twenty years, this bat's global status slid from
+            <b>Near Threatened</b> to <b>Critically Endangered</b> — one of
+            the steepest declines of any species in this dataset. Unlike
+            wide-ranging mammals such as the tiger or elephant, the Kolar
+            Leaf-nosed Bat depends on a single known roosting cave, making
+            it acutely vulnerable to localized habitat disturbance from
+            quarrying and encroachment. Its trajectory is a concentrated
+            illustration of the pattern this dashboard traces at scale:
+            habitat pressure translating directly into conservation risk.
+        </div>
+    </div>
+    """
+)
 
 # ============================================================
 # KPI CARDS
