@@ -6,7 +6,8 @@ import plotly.express as px
 from utils.data_loader import (
     load_annual_loss,
     load_state_year_loss,
-    load_state_analysis
+    load_district_year_loss,
+    load_state_analysis,
 )
 
 
@@ -917,3 +918,131 @@ if (
         </div>
         """
     )
+# ============================================================
+# DISTRICT-LEVEL BREAKDOWN
+# ============================================================
+
+district_year = load_district_year_loss()
+
+st.html(
+    """
+    <div class="section-title">
+        District-Level Breakdown
+    </div>
+    """
+)
+
+st.markdown(
+    "Tree-cover loss narrows from state to district level, "
+    "covering the 34 districts most relevant to Western Ghats "
+    "habitat — core Ghats districts plus a few adjoining ones "
+    "with strong disturbance signal."
+)
+
+district_states = sorted(district_year["state"].unique().tolist())
+
+selected_district_state = st.selectbox(
+    "Select a state to break down by district",
+    district_states,
+    key="district_state_select"
+)
+
+state_districts = district_year[
+    district_year["state"] == selected_district_state
+]
+
+# --- Ranked bar chart: total loss by district ---
+
+district_totals = (
+    state_districts
+    .groupby("district")["tree_cover_loss_ha"]
+    .sum()
+    .reset_index()
+    .sort_values("tree_cover_loss_ha", ascending=True)
+)
+
+fig_district_totals = px.bar(
+    district_totals,
+    x="tree_cover_loss_ha",
+    y="district",
+    orientation="h",
+    labels={
+        "tree_cover_loss_ha": "Total tree-cover loss (ha), 2001–2024",
+        "district": ""
+    },
+    color="tree_cover_loss_ha",
+    color_continuous_scale=["#D9E6DC", "#1F5C45"]
+)
+
+fig_district_totals.update_layout(
+    height=max(320, 40 * len(district_totals)),
+    margin=dict(l=15, r=20, t=15, b=15),
+    paper_bgcolor="white",
+    plot_bgcolor="white",
+    font=dict(family="Arial", color="#5F6D64"),
+    coloraxis_showscale=False
+)
+
+st.plotly_chart(fig_district_totals, use_container_width=True)
+
+# --- Trend lines: top 5 districts by loss over time ---
+
+top5_districts = district_totals.sort_values(
+    "tree_cover_loss_ha", ascending=False
+).head(5)["district"].tolist()
+
+trend_data = state_districts[
+    state_districts["district"].isin(top5_districts)
+]
+
+fig_district_trend = px.line(
+    trend_data,
+    x="year",
+    y="tree_cover_loss_ha",
+    color="district",
+    labels={
+        "tree_cover_loss_ha": "Tree-cover loss (ha)",
+        "year": "Year",
+        "district": "District"
+    }
+)
+
+fig_district_trend.update_layout(
+    height=420,
+    margin=dict(l=15, r=20, t=15, b=15),
+    paper_bgcolor="white",
+    plot_bgcolor="white",
+    font=dict(family="Arial", color="#5F6D64"),
+    legend=dict(orientation="h", yanchor="bottom", y=1.02, x=0)
+)
+
+st.plotly_chart(fig_district_trend, use_container_width=True)
+
+top_district_name = district_totals.iloc[-1]["district"]
+top_district_value = district_totals.iloc[-1]["tree_cover_loss_ha"]
+
+st.html(
+    f"""
+    <div class="insight-card">
+
+        <div class="insight-title">
+            🔎 District-level signal
+        </div>
+
+        <div class="insight-text">
+
+            Within <strong>{selected_district_state}</strong>,
+            <strong>{top_district_name}</strong> has recorded the
+            highest cumulative tree-cover loss since 2001, at
+            approximately <strong>{top_district_value:,.0f} hectares</strong>.
+            The trend lines above show whether that loss is
+            concentrated in specific years or spread steadily
+            across the record — a pattern often linked to
+            infrastructure expansion, road-building, or
+            settlement growth in that district.
+
+        </div>
+
+    </div>
+    """
+)

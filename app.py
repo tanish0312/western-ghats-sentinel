@@ -661,6 +661,13 @@ pages = {
             title="Forecast",
             icon="📈",
             url_path="forecast"
+        ),
+
+        st.Page(
+            "pages/9_District_Hotspots.py",
+            title="District Hotspots",
+            icon="🎯",
+            url_path="district-hotspots"
         )
 
     ]

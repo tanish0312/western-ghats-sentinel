@@ -33,6 +33,26 @@ def load_state_year_loss():
 
 
 # ---------------------------------------------------------
+# DISTRICT-YEAR TREE-COVER LOSS
+# ---------------------------------------------------------
+
+def load_district_year_loss():
+    return pd.read_csv(
+        "data/DISTRICT_YEAR_TREE_LOSS.csv"
+    )
+
+
+# ---------------------------------------------------------
+# DISTRICT MAP
+# ---------------------------------------------------------
+
+def load_district_map():
+    return gpd.read_file(
+        "data/western_ghats_districts.geojson"
+    )
+
+
+# ---------------------------------------------------------
 # FINAL STATE ANALYSIS
 # ---------------------------------------------------------
 
