@@ -27,6 +27,33 @@ state = pd.read_csv(
     "data/FINAL_STATE_ANALYSIS.csv"
 )
 
+species_history = pd.read_csv(
+    "data/SPECIES_STATUS_HISTORY.csv"
+)
+
+SEVERITY_ORDER = {"LC": 0, "NT": 1, "VU": 2, "EN": 3, "CR": 4, "EW": 5, "EX": 6}
+
+def compute_species_pressure_stat(df):
+    df = df.copy()
+    df["status_standardized"] = df["status_standardized"].astype(str).str.strip()
+    df["year_published"] = pd.to_numeric(df["year_published"], errors="coerce")
+    df = df.dropna(subset=["year_published"])
+
+    latest_per_species = (
+        df[df["status_standardized"].isin(SEVERITY_ORDER.keys())]
+        .sort_values("year_published")
+        .groupby("species")
+        .tail(1)
+    )
+
+    total = len(latest_per_species)
+    severe = latest_per_species["status_standardized"].isin(["EN", "CR", "EW", "EX"]).sum()
+
+    pct = (severe / total * 100) if total else 0
+    return pct, total
+
+species_severe_pct, species_total = compute_species_pressure_stat(species_history)
+
 
 # ============================================================
 # HELPER
@@ -670,11 +697,11 @@ st.html("""
 # HERO
 # ============================================================
 
-st.html("""
+st.html(f"""
 <div class="hero">
 
     <div class="hero-kicker">
-        ENVIRONMENTAL INTELLIGENCE DASHBOARD
+        CONSERVATION INTELLIGENCE DASHBOARD
     </div>
 
     <div class="hero-title">
@@ -682,13 +709,13 @@ st.html("""
     </div>
 
     <div class="hero-subtitle">
-        An interactive research dashboard exploring
-        tree-cover loss, carbon emissions and conservation
-        patterns across the Western Ghats study region.
+        {species_severe_pct:.1f}% of tracked species in the Western
+        Ghats are now Endangered or worse. We trace why,
+        through two decades of tree-cover loss across five states.
     </div>
 
     <div class="hero-tag">
-        TREE COVER • CARBON • CONSERVATION
+        SPECIES • HABITAT • CONSERVATION
     </div>
 
 </div>
@@ -710,10 +737,28 @@ st.markdown(
 )
 
 
-k1, k2, k3, k4 = st.columns(4)
-
+k1, k2, k3, k4, k5= st.columns(5)
 
 with k1:
+    st.html(
+        f"""
+        <div class="kpi-card">
+            <div class="kpi-label">
+                SPECIES UNDER PRESSURE
+            </div>
+            <div class="kpi-value">
+                {species_severe_pct:.1f}%
+            </div>
+            <div class="kpi-description">
+                Of {species_total} tracked species are now
+                Endangered or worse.
+            </div>
+        </div>
+        """
+    )
+
+
+with k2:
 
     st.html(
         f"""
@@ -737,7 +782,7 @@ with k1:
     )
 
 
-with k2:
+with k3:
 
     st.html(
         f"""
@@ -761,7 +806,7 @@ with k2:
     )
 
 
-with k3:
+with k4:
 
     if not annual_clean.empty:
 
@@ -802,7 +847,7 @@ with k3:
     )
 
 
-with k4:
+with k5:
 
     st.html(
         f"""
