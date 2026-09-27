@@ -2,6 +2,31 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+import os
+
+def get_species_image_path(species_name):
+    base = species_name.lower().replace(" ", "_")
+    for ext in [".jpg", ".jpeg", ".png"]:
+        path = os.path.join("images", base + ext)
+        if os.path.exists(path):
+            return path
+    return None
+
+
+def show_species_image(species_name):
+    path = get_species_image_path(species_name)
+    if path:
+        st.image(path, use_container_width=True)
+    else:
+        st.html(f"""
+        <div style="
+            background:#e8ede9; border-radius:14px; padding:35px 20px;
+            text-align:center; color:#5f6d64; font-style:italic;
+            height:100%; display:flex; align-items:center; justify-content:center;
+        ">
+            📷 No verified photograph available<br>for <b>{species_name}</b>
+        </div>
+        """)
 
 
 # ============================================================
@@ -463,7 +488,13 @@ timeline_steps = "".join(
     for _, row in spotlight.iterrows()
 )
 
-st.html(
+col_img, col_card = st.columns([1, 3])
+
+with col_img:
+    show_species_image("Hipposideros hypophyllus")
+
+with col_card:
+    st.html(
     f"""
     <style>
     .spotlight-card {{
@@ -551,7 +582,10 @@ st.html(
         </div>
     </div>
     """
-)
+    )
+
+
+
 
 # ============================================================
 # KPI CARDS
@@ -1087,33 +1121,39 @@ order = (
 
 
 # ============================================================
-# SPECIES PROFILE
+# SPECIES PROFILE (with image)
 # ============================================================
 
-st.html(
-    f"""
-    <div class="species-profile">
+col_img, col_info = st.columns([1, 2])
 
-        <div class="species-label">
-            Selected Species
+with col_img:
+    show_species_image(selected_species)
+
+with col_info:
+    st.html(
+        f"""
+        <div class="species-profile">
+
+            <div class="species-label">
+                Selected Species
+            </div>
+
+            <div class="species-name">
+                {selected_species}
+            </div>
+
+            <div class="species-common">
+                {common_name}
+            </div>
+
+            <div class="species-status">
+                Latest recorded status:
+                {latest_status}
+            </div>
+
         </div>
-
-        <div class="species-name">
-            {selected_species}
-        </div>
-
-        <div class="species-common">
-            {common_name}
-        </div>
-
-        <div class="species-status">
-            Latest recorded status:
-            {latest_status}
-        </div>
-
-    </div>
-    """
-)
+        """
+    )
 
 
 # ============================================================
