@@ -670,6 +670,13 @@ pages = {
             title="District Hotspots",
             icon="🎯",
             url_path="district-hotspots"
+        ),
+
+        st.Page(
+         "pages/10_Species_Gallery.py",
+         title="Species Gallery",
+         icon="🐆",
+         url_path="species-gallery"
         )
 
     ]
