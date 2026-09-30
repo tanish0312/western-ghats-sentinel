@@ -266,6 +266,10 @@ lag_df = load_csv(
     "LAG_ANALYSIS.csv"
 )
 
+district_df = load_csv(
+    "DISTRICT_YEAR_TREE_LOSS.csv"
+)
+
 
 # ============================================================
 # 8. IDENTIFY ANNUAL DATA COLUMNS
@@ -538,6 +542,53 @@ if (
 
 
 # ============================================================
+# 12B. DISTRICT METRICS
+# ============================================================
+
+top_hotspot_district = "N/A"
+top_hotspot_state = "N/A"
+top_hotspot_value = 0
+district_count = 0
+top3_hotspot_text = "N/A"
+
+if not district_df.empty and set(
+    ["state", "district", "tree_cover_loss_ha"]
+).issubset(district_df.columns):
+
+    district_df["tree_cover_loss_ha"] = pd.to_numeric(
+        district_df["tree_cover_loss_ha"],
+        errors="coerce"
+    )
+
+    district_totals_report = (
+        district_df
+        .dropna(subset=["tree_cover_loss_ha"])
+        .groupby(["state", "district"])["tree_cover_loss_ha"]
+        .sum()
+        .reset_index()
+        .sort_values("tree_cover_loss_ha", ascending=False)
+    )
+
+    district_count = district_totals_report["district"].nunique()
+
+    if not district_totals_report.empty:
+
+        top_row = district_totals_report.iloc[0]
+
+        top_hotspot_district = str(top_row["district"])
+        top_hotspot_state = str(top_row["state"])
+        top_hotspot_value = safe_number(top_row["tree_cover_loss_ha"])
+
+        top3 = district_totals_report.head(3)
+
+        top3_hotspot_text = "; ".join(
+            f"{r['district']} ({r['state']}), "
+            f"{format_number(r['tree_cover_loss_ha'])} ha"
+            for _, r in top3.iterrows()
+        )
+
+
+# ============================================================
 # 13. SPECIES METRICS
 # ============================================================
 
@@ -580,6 +631,23 @@ if species_status_col is not None:
         .dropna()
         .nunique()
     )
+
+
+species_image_count = 0
+
+if species_name_col is not None and os.path.isdir("images"):
+
+    image_files = {
+        os.path.splitext(f)[0]
+        for f in os.listdir("images")
+    }
+
+    species_keys = {
+        str(s).strip().lower().replace(" ", "_")
+        for s in species_history_df[species_name_col].dropna().unique()
+    }
+
+    species_image_count = len(image_files & species_keys)
 
 
 # ============================================================
