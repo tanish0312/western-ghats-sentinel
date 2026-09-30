@@ -121,19 +121,4 @@ The compiled PDF report will be saved automatically to:
 - **Spatial Granularity**: Forest loss indicators are aggregated at state levels; detailed micro-habitat analysis requires high-resolution remote sensing layers.
 - **Assessment Schedules**: Species Red List assessments reflect periodic IUCN evaluations rather than continuous real-time censuses.
 
----
 
-## 🤝 Contributing
-
-Contributions are welcome! If you would like to add new dataset layers, improve spatial analysis models, or refine species visualization components:
-1. Fork the Repository
-2. Create your Feature Branch (`git checkout -b feature/NewFeature`)
-3. Commit your Changes (`git commit -m 'Add NewFeature'`)
-4. Push to the Branch (`git push origin feature/NewFeature`)
-5. Open a Pull Request
-
----
-
-## 📜 License
-
-Distributed under the **MIT License**. See `LICENSE` for more information.
