@@ -2,13 +2,6 @@
 
 > **An Interactive Environmental Analytics & Species Conservation Platform for the Western Ghats Biodiversity Hotspot**
 
-![Python](https://img.shields.io/badge/Python-3.9%2B-blue?style=flat-square&logo=python)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.28%2B-FF4B4B?style=flat-square&logo=streamlit)
-![GeoPandas](https://img.shields.io/badge/GeoPandas-Spatial%20Data-139C5A?style=flat-square)
-![ReportLab](https://img.shields.io/badge/ReportLab-PDF%20Generation-3178C6?style=flat-square)
-![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)
-
----
 
 ## 📌 Executive Overview
 
