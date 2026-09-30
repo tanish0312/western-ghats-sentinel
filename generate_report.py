@@ -1,13 +1,13 @@
 # ============================================================
 # WESTERN GHATS SENTINEL
-# PROFESSIONAL PROJECT REPORT GENERATOR
+# SPECIES-FOCUSED CONSERVATION & BIODIVERSITY REPORT GENERATOR
 # ============================================================
 
 import os
 import pandas as pd
 
 from reportlab.lib import colors
-from reportlab.lib.enums import TA_CENTER
+from reportlab.lib.enums import TA_CENTER, TA_LEFT
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import cm
@@ -18,6 +18,7 @@ from reportlab.platypus import (
     Table,
     TableStyle,
     PageBreak,
+    KeepTogether,
 )
 
 
@@ -44,7 +45,7 @@ os.makedirs(
 
 OUTPUT_FILE = os.path.join(
     REPORT_DIR,
-    "Western_Ghats_Sentinel_Project_Report.pdf"
+    "Western_Ghats_Sentinel_Species_Conservation_Report.pdf"
 )
 
 
@@ -65,6 +66,9 @@ DARK_TEXT = colors.HexColor("#26332C")
 GREY_TEXT = colors.HexColor("#69736D")
 LIGHT_GREY = colors.HexColor("#F2F4F2")
 
+CRITICAL_RED = colors.HexColor("#A83232")
+WARNING_ORANGE = colors.HexColor("#D97724")
+
 WHITE = colors.white
 
 
@@ -77,11 +81,7 @@ def load_csv(filename):
     Load a CSV from the project's data folder.
     Returns an empty DataFrame if the file does not exist.
     """
-
-    filepath = os.path.join(
-        DATA_DIR,
-        filename
-    )
+    filepath = os.path.join(DATA_DIR, filename)
 
     if not os.path.exists(filepath):
         print(f"Warning: {filename} not found.")
@@ -89,25 +89,17 @@ def load_csv(filename):
 
     try:
         return pd.read_csv(filepath)
-
     except Exception as error:
-        print(
-            f"Warning: Could not read {filename}: {error}"
-        )
+        print(f"Warning: Could not read {filename}: {error}")
         return pd.DataFrame()
 
 
 # ============================================================
-# 4. COLUMN DETECTION
+# 4. COLUMN DETECTION & HELPER FUNCTIONS
 # ============================================================
 
 def find_column(df, candidates):
-    """
-    Find a column by:
-    1. Exact name
-    2. Partial name
-    """
-
+    """Find a column by exact or partial name matching."""
     if df.empty:
         return None
 
@@ -115,101 +107,56 @@ def find_column(df, candidates):
 
     # Exact matching
     for candidate in candidates:
-
         for column in columns:
-
             if column.lower() == candidate.lower():
                 return column
 
     # Partial matching
     for candidate in candidates:
-
         for column in columns:
-
             if candidate.lower() in column.lower():
                 return column
 
     return None
 
 
-# ============================================================
-# 5. SAFE NUMERIC FUNCTIONS
-# ============================================================
-
 def to_numeric(series):
-
     if series is None:
         return pd.Series(dtype=float)
-
-    return pd.to_numeric(
-        series,
-        errors="coerce"
-    )
+    return pd.to_numeric(series, errors="coerce")
 
 
 def safe_sum(series):
-
     if series is None:
         return 0
-
     values = to_numeric(series).dropna()
-
-    if values.empty:
-        return 0
-
-    return float(values.sum())
+    return float(values.sum()) if not values.empty else 0
 
 
 def safe_mean(series):
-
     if series is None:
         return 0
-
     values = to_numeric(series).dropna()
-
-    if values.empty:
-        return 0
-
-    return float(values.mean())
+    return float(values.mean()) if not values.empty else 0
 
 
 def safe_number(value):
-
     try:
-
-        value = float(value)
-
-        if pd.isna(value):
-            return 0
-
-        return value
-
+        val = float(value)
+        return 0 if pd.isna(val) else val
     except Exception:
-
         return 0
 
 
 def format_number(value, decimals=0):
-
-    value = safe_number(value)
-
+    val = safe_number(value)
     if decimals == 0:
-        return f"{value:,.0f}"
+        return f"{val:,.0f}"
+    return f"{val:,.{decimals}f}"
 
-    return f"{value:,.{decimals}f}"
-
-
-# ============================================================
-# 6. CORRELATION
-# ============================================================
 
 def calculate_correlation(df, column_a, column_b, method):
-
-    if (
-        df.empty
-        or column_a is None
-        or column_b is None
-    ):
+    if df.empty or column_a is None or column_b is None:
         return None
 
     temp = pd.DataFrame({
@@ -221,530 +168,225 @@ def calculate_correlation(df, column_a, column_b, method):
         return None
 
     try:
-
-        return float(
-            temp["A"].corr(
-                temp["B"],
-                method=method
-            )
-        )
-
+        return float(temp["A"].corr(temp["B"], method=method))
     except Exception:
-
         return None
 
 
 # ============================================================
-# 7. LOAD ALL PROJECT DATA
+# 5. LOAD ALL PROJECT DATA
 # ============================================================
 
-annual_df = load_csv(
-    "ANNUAL_TREE_COVER_LOSS.csv"
-)
-
-state_df = load_csv(
-    "FINAL_STATE_ANALYSIS.csv"
-)
-
-state_year_df = load_csv(
-    "STATE_YEAR_TREE_LOSS.csv"
-)
-
-species_history_df = load_csv(
-    "SPECIES_STATUS_HISTORY.csv"
-)
-
-species_trends_df = load_csv(
-    "SPECIES_STATUS_TRENDS.csv"
-)
-
-species_transitions_df = load_csv(
-    "SPECIES_STATUS_TRANSITIONS.csv"
-)
-
-lag_df = load_csv(
-    "LAG_ANALYSIS.csv"
-)
-
-district_df = load_csv(
-    "DISTRICT_YEAR_TREE_LOSS.csv"
-)
+annual_df = load_csv("ANNUAL_TREE_COVER_LOSS.csv")
+state_df = load_csv("FINAL_STATE_ANALYSIS.csv")
+state_year_df = load_csv("STATE_YEAR_TREE_LOSS.csv")
+species_history_df = load_csv("SPECIES_STATUS_HISTORY.csv")
+species_trends_df = load_csv("SPECIES_STATUS_TRENDS.csv")
+species_transitions_df = load_csv("SPECIES_STATUS_TRANSITIONS.csv")
+lag_df = load_csv("LAG_ANALYSIS.csv")
+district_df = load_csv("DISTRICT_YEAR_TREE_LOSS.csv")
 
 
 # ============================================================
-# 8. IDENTIFY ANNUAL DATA COLUMNS
-# ============================================================
-
-annual_year_col = find_column(
-    annual_df,
-    [
-        "year",
-        "Year"
-    ]
-)
-
-annual_loss_col = find_column(
-    annual_df,
-    [
-        "tree_cover_loss_ha",
-        "total_loss_ha",
-        "loss_ha",
-        "tree_cover_loss",
-        "loss"
-    ]
-)
-
-
-# ============================================================
-# 9. IDENTIFY STATE DATA COLUMNS
-# ============================================================
-
-state_col = find_column(
-    state_df,
-    [
-        "state",
-        "state_name",
-        "State"
-    ]
-)
-
-state_loss_col = find_column(
-    state_df,
-    [
-        "total_loss_ha",
-        "tree_cover_loss_ha",
-        "loss_ha",
-        "total_loss"
-    ]
-)
-
-state_intensity_col = find_column(
-    state_df,
-    [
-        "loss_per_1000km2",
-        "loss_per_1000",
-        "loss_intensity"
-    ]
-)
-
-state_emissions_col = find_column(
-    state_df,
-    [
-        "total_emissions_Mg",
-        "total_emissions",
-        "emissions_Mg",
-        "co2_emissions",
-        "emissions"
-    ]
-)
-
-state_co2ha_col = find_column(
-    state_df,
-    [
-        "Mg_CO2e_per_ha",
-        "co2e_per_ha",
-        "emissions_per_ha"
-    ]
-)
-
-
-# ============================================================
-# 10. PREPARE ANNUAL DATA
-# ============================================================
-
-if annual_year_col is not None:
-
-    annual_df[annual_year_col] = pd.to_numeric(
-        annual_df[annual_year_col],
-        errors="coerce"
-    )
-
-if annual_loss_col is not None:
-
-    annual_df[annual_loss_col] = pd.to_numeric(
-        annual_df[annual_loss_col],
-        errors="coerce"
-    )
-
-
-# ============================================================
-# 11. EXECUTIVE METRICS
-# ============================================================
-
-total_loss = 0
-average_annual_loss = 0
-
-start_year = "N/A"
-end_year = "N/A"
-
-peak_year = "N/A"
-peak_loss = 0
-
-
-if (
-    annual_year_col is not None
-    and annual_loss_col is not None
-    and not annual_df.empty
-):
-
-    valid_annual = annual_df.dropna(
-        subset=[
-            annual_year_col,
-            annual_loss_col
-        ]
-    ).copy()
-
-    if not valid_annual.empty:
-
-        total_loss = safe_sum(
-            valid_annual[annual_loss_col]
-        )
-
-        average_annual_loss = safe_mean(
-            valid_annual[annual_loss_col]
-        )
-
-        start_year = int(
-            valid_annual[annual_year_col].min()
-        )
-
-        end_year = int(
-            valid_annual[annual_year_col].max()
-        )
-
-        peak_row = valid_annual.loc[
-            valid_annual[annual_loss_col].idxmax()
-        ]
-
-        peak_year = int(
-            peak_row[annual_year_col]
-        )
-
-        peak_loss = safe_number(
-            peak_row[annual_loss_col]
-        )
-
-
-# ============================================================
-# 12. STATE METRICS
-# ============================================================
-
-highest_loss_state = "N/A"
-highest_loss_value = 0
-
-highest_intensity_state = "N/A"
-highest_intensity_value = 0
-
-highest_emissions_state = "N/A"
-highest_emissions_value = 0
-
-
-# ------------------------------------------------------------
-# Highest total loss
-# ------------------------------------------------------------
-
-if (
-    state_col is not None
-    and state_loss_col is not None
-    and not state_df.empty
-):
-
-    state_df[state_loss_col] = pd.to_numeric(
-        state_df[state_loss_col],
-        errors="coerce"
-    )
-
-    valid_state = state_df.dropna(
-        subset=[state_loss_col]
-    )
-
-    if not valid_state.empty:
-
-        row = valid_state.loc[
-            valid_state[state_loss_col].idxmax()
-        ]
-
-        highest_loss_state = str(
-            row[state_col]
-        )
-
-        highest_loss_value = safe_number(
-            row[state_loss_col]
-        )
-
-
-# ------------------------------------------------------------
-# Highest intensity
-# ------------------------------------------------------------
-
-if (
-    state_col is not None
-    and state_intensity_col is not None
-    and not state_df.empty
-):
-
-    state_df[state_intensity_col] = pd.to_numeric(
-        state_df[state_intensity_col],
-        errors="coerce"
-    )
-
-    valid_intensity = state_df.dropna(
-        subset=[state_intensity_col]
-    )
-
-    if not valid_intensity.empty:
-
-        row = valid_intensity.loc[
-            valid_intensity[state_intensity_col].idxmax()
-        ]
-
-        highest_intensity_state = str(
-            row[state_col]
-        )
-
-        highest_intensity_value = safe_number(
-            row[state_intensity_col]
-        )
-
-
-# ------------------------------------------------------------
-# Highest emissions
-# ------------------------------------------------------------
-
-if (
-    state_col is not None
-    and state_emissions_col is not None
-    and not state_df.empty
-):
-
-    state_df[state_emissions_col] = pd.to_numeric(
-        state_df[state_emissions_col],
-        errors="coerce"
-    )
-
-    valid_emissions = state_df.dropna(
-        subset=[state_emissions_col]
-    )
-
-    if not valid_emissions.empty:
-
-        row = valid_emissions.loc[
-            valid_emissions[state_emissions_col].idxmax()
-        ]
-
-        highest_emissions_state = str(
-            row[state_col]
-        )
-
-        highest_emissions_value = safe_number(
-            row[state_emissions_col]
-        )
-
-
-# ============================================================
-# 12B. DISTRICT METRICS
-# ============================================================
-
-top_hotspot_district = "N/A"
-top_hotspot_state = "N/A"
-top_hotspot_value = 0
-district_count = 0
-top3_hotspot_text = "N/A"
-
-if not district_df.empty and set(
-    ["state", "district", "tree_cover_loss_ha"]
-).issubset(district_df.columns):
-
-    district_df["tree_cover_loss_ha"] = pd.to_numeric(
-        district_df["tree_cover_loss_ha"],
-        errors="coerce"
-    )
-
-    district_totals_report = (
-        district_df
-        .dropna(subset=["tree_cover_loss_ha"])
-        .groupby(["state", "district"])["tree_cover_loss_ha"]
-        .sum()
-        .reset_index()
-        .sort_values("tree_cover_loss_ha", ascending=False)
-    )
-
-    district_count = district_totals_report["district"].nunique()
-
-    if not district_totals_report.empty:
-
-        top_row = district_totals_report.iloc[0]
-
-        top_hotspot_district = str(top_row["district"])
-        top_hotspot_state = str(top_row["state"])
-        top_hotspot_value = safe_number(top_row["tree_cover_loss_ha"])
-
-        top3 = district_totals_report.head(3)
-
-        top3_hotspot_text = "; ".join(
-            f"{r['district']} ({r['state']}), "
-            f"{format_number(r['tree_cover_loss_ha'])} ha"
-            for _, r in top3.iterrows()
-        )
-
-
-# ============================================================
-# 13. SPECIES METRICS
+# 6. SPECIES DATA METRICS (PRIMARY FOCUS)
 # ============================================================
 
 species_name_col = find_column(
     species_history_df,
-    [
-        "species",
-        "species_name",
-        "scientific_name"
-    ]
+    ["species", "species_name", "scientific_name", "common_name", "name"]
 )
 
 species_status_col = find_column(
     species_history_df,
-    [
-        "status",
-        "conservation_status",
-        "iucn_status"
-    ]
+    ["status", "conservation_status", "iucn_status", "category", "red_list_status"]
 )
 
+species_year_col = find_column(
+    species_history_df,
+    ["year", "assessment_year", "date"]
+)
 
-species_count = 0
+total_species_monitored = 0
 status_category_count = 0
+status_distribution = {}
+threatened_species_count = 0
+critically_endangered_count = 0
+endangered_count = 0
+vulnerable_count = 0
 
+if not species_history_df.empty and species_name_col:
+    total_species_monitored = species_history_df[species_name_col].dropna().nunique()
 
-if species_name_col is not None:
+if not species_history_df.empty and species_status_col:
+    # Get latest status per species
+    if species_year_col:
+        species_history_df[species_year_col] = pd.to_numeric(species_history_df[species_year_col], errors="coerce")
+        latest_species_df = species_history_df.sort_values(species_year_col).groupby(species_name_col).last().reset_index()
+    else:
+        latest_species_df = species_history_df.groupby(species_name_col).last().reset_index()
 
-    species_count = (
-        species_history_df[species_name_col]
-        .dropna()
-        .nunique()
-    )
+    status_counts = latest_species_df[species_status_col].value_counts()
+    status_distribution = status_counts.to_dict()
+    status_category_count = len(status_counts)
 
+    # Categorize threat levels
+    for status, count in status_distribution.items():
+        st_upper = str(status).upper()
+        if "CRITICAL" in st_upper or st_upper == "CR":
+            critically_endangered_count += count
+            threatened_species_count += count
+        elif "ENDANGERED" in st_upper or st_upper == "EN":
+            endangered_count += count
+            threatened_species_count += count
+        elif "VULNERABLE" in st_upper or st_upper == "VU":
+            vulnerable_count += count
+            threatened_species_count += count
 
-if species_status_col is not None:
+# Transitions analysis
+total_transitions = len(species_transitions_df) if not species_transitions_df.empty else 0
+trans_species_col = find_column(species_transitions_df, ["species", "species_name", "scientific_name"])
+trans_from_col = find_column(species_transitions_df, ["from_status", "initial_status", "from", "previous_status"])
+trans_to_col = find_column(species_transitions_df, ["to_status", "current_status", "to", "new_status"])
 
-    status_category_count = (
-        species_history_df[species_status_col]
-        .dropna()
-        .nunique()
-    )
+# Trends analysis
+declining_species_count = 0
+stable_species_count = 0
+increasing_species_count = 0
+trend_col = find_column(species_trends_df, ["trend", "status_trend", "population_trend", "change", "direction"])
 
+if not species_trends_df.empty and trend_col:
+    trend_counts = species_trends_df[trend_col].astype(str).str.upper().value_counts()
+    for tr, c in trend_counts.items():
+        if "DECLIN" in tr or "DETERIORAT" in tr or "DOWN" in tr or "NEGATIVE" in tr:
+            declining_species_count += c
+        elif "STABLE" in tr or "NEUTRAL" in tr:
+            stable_species_count += c
+        elif "INCREAS" in tr or "IMPROV" in tr or "UP" in tr or "POSITIVE" in tr:
+            increasing_species_count += c
 
 species_image_count = 0
-
-if species_name_col is not None and os.path.isdir("images"):
-
-    image_files = {
-        os.path.splitext(f)[0]
-        for f in os.listdir("images")
-    }
-
+if species_name_col and os.path.isdir("images"):
+    image_files = {os.path.splitext(f)[0].lower() for f in os.listdir("images")}
     species_keys = {
         str(s).strip().lower().replace(" ", "_")
         for s in species_history_df[species_name_col].dropna().unique()
     }
-
     species_image_count = len(image_files & species_keys)
 
 
 # ============================================================
-# 14. CORRELATION
+# 7. HABITAT LOSS & ENVIRONMENTAL METRICS
 # ============================================================
 
-annual_emissions_col = find_column(
+annual_year_col = find_column(annual_df, ["year", "Year"])
+annual_loss_col = find_column(
     annual_df,
-    [
-        "total_emissions_Mg",
-        "emissions_Mg",
-        "emissions",
-        "co2",
-        "carbon"
-    ]
+    ["tree_cover_loss_ha", "total_loss_ha", "loss_ha", "tree_cover_loss", "loss"]
 )
 
-spearman_correlation = calculate_correlation(
-    annual_df,
-    annual_loss_col,
-    annual_emissions_col,
-    "spearman"
-)
+total_loss = 0
+average_annual_loss = 0
+start_year = "N/A"
+end_year = "N/A"
+peak_year = "N/A"
+peak_loss = 0
 
+if annual_year_col and annual_loss_col and not annual_df.empty:
+    annual_df[annual_year_col] = pd.to_numeric(annual_df[annual_year_col], errors="coerce")
+    annual_df[annual_loss_col] = pd.to_numeric(annual_df[annual_loss_col], errors="coerce")
+    valid_annual = annual_df.dropna(subset=[annual_year_col, annual_loss_col]).copy()
 
-pearson_correlation = calculate_correlation(
-    annual_df,
-    annual_loss_col,
-    annual_emissions_col,
-    "pearson"
-)
+    if not valid_annual.empty:
+        total_loss = safe_sum(valid_annual[annual_loss_col])
+        average_annual_loss = safe_mean(valid_annual[annual_loss_col])
+        start_year = int(valid_annual[annual_year_col].min())
+        end_year = int(valid_annual[annual_year_col].max())
+
+        peak_row = valid_annual.loc[valid_annual[annual_loss_col].idxmax()]
+        peak_year = int(peak_row[annual_year_col])
+        peak_loss = safe_number(peak_row[annual_loss_col])
+
+state_col = find_column(state_df, ["state", "state_name", "State"])
+state_loss_col = find_column(state_df, ["total_loss_ha", "tree_cover_loss_ha", "loss_ha", "total_loss"])
+state_intensity_col = find_column(state_df, ["loss_per_1000km2", "loss_per_1000", "loss_intensity"])
+state_emissions_col = find_column(state_df, ["total_emissions_Mg", "total_emissions", "emissions_Mg", "co2_emissions"])
+
+highest_loss_state, highest_loss_value = "N/A", 0
+highest_intensity_state, highest_intensity_value = "N/A", 0
+
+if state_col and state_loss_col and not state_df.empty:
+    state_df[state_loss_col] = pd.to_numeric(state_df[state_loss_col], errors="coerce")
+    valid_state = state_df.dropna(subset=[state_loss_col])
+    if not valid_state.empty:
+        row = valid_state.loc[valid_state[state_loss_col].idxmax()]
+        highest_loss_state, highest_loss_value = str(row[state_col]), safe_number(row[state_loss_col])
+
+if state_col and state_intensity_col and not state_df.empty:
+    state_df[state_intensity_col] = pd.to_numeric(state_df[state_intensity_col], errors="coerce")
+    valid_intensity = state_df.dropna(subset=[state_intensity_col])
+    if not valid_intensity.empty:
+        row = valid_intensity.loc[valid_intensity[state_intensity_col].idxmax()]
+        highest_intensity_state, highest_intensity_value = str(row[state_col]), safe_number(row[state_intensity_col])
 
 
 # ============================================================
-# 15. REPORT STYLES
+# 8. REPORT STYLES
 # ============================================================
 
 styles = getSampleStyleSheet()
-
 
 title_style = ParagraphStyle(
     "TitleCustom",
     parent=styles["Title"],
     fontName="Helvetica-Bold",
-    fontSize=28,
-    leading=32,
+    fontSize=26,
+    leading=30,
     textColor=WHITE,
     alignment=TA_CENTER,
-    spaceAfter=12
+    spaceAfter=10
 )
-
 
 subtitle_style = ParagraphStyle(
     "SubtitleCustom",
     parent=styles["Normal"],
     fontName="Helvetica",
-    fontSize=12,
-    leading=18,
+    fontSize=11.5,
+    leading=16,
     textColor=colors.HexColor("#DCE9DF"),
     alignment=TA_CENTER
 )
-
 
 section_style = ParagraphStyle(
     "SectionCustom",
     parent=styles["Heading1"],
     fontName="Helvetica-Bold",
-    fontSize=19,
-    leading=24,
+    fontSize=18,
+    leading=22,
     textColor=FOREST_GREEN,
-    spaceBefore=12,
-    spaceAfter=10
+    spaceBefore=14,
+    spaceAfter=8
 )
-
 
 subsection_style = ParagraphStyle(
     "SubsectionCustom",
     parent=styles["Heading2"],
     fontName="Helvetica-Bold",
-    fontSize=13,
-    leading=17,
+    fontSize=12.5,
+    leading=16,
     textColor=EARTH_BROWN,
     spaceBefore=10,
-    spaceAfter=6
+    spaceAfter=5
 )
-
 
 body_style = ParagraphStyle(
     "BodyCustom",
     parent=styles["BodyText"],
     fontName="Helvetica",
-    fontSize=9.7,
-    leading=15,
+    fontSize=9.5,
+    leading=14.5,
     textColor=DARK_TEXT,
-    spaceAfter=8
+    spaceAfter=7
 )
-
 
 small_style = ParagraphStyle(
     "SmallCustom",
@@ -754,74 +396,48 @@ small_style = ParagraphStyle(
     textColor=GREY_TEXT
 )
 
-
 bullet_style = ParagraphStyle(
     "BulletCustom",
     parent=body_style,
     leftIndent=14,
     firstLineIndent=-8,
     bulletIndent=5,
-    spaceAfter=5
+    spaceAfter=4
 )
-
 
 highlight_style = ParagraphStyle(
     "HighlightCustom",
     parent=body_style,
     fontName="Helvetica-Bold",
-    fontSize=10.5,
-    leading=15,
+    fontSize=10,
+    leading=14,
     textColor=DEEP_GREEN
 )
 
 
 # ============================================================
-# 16. PAGE FOOTER
+# 9. PAGE FOOTER
 # ============================================================
 
 def add_page_number(canvas, doc):
-
     canvas.saveState()
-
     width, height = A4
+    canvas.setStrokeColor(colors.HexColor("#D9DED9"))
+    canvas.line(2 * cm, 1.5 * cm, width - 2 * cm, 1.5 * cm)
 
-    canvas.setStrokeColor(
-        colors.HexColor("#D9DED9")
-    )
-
-    canvas.line(
-        2 * cm,
-        1.5 * cm,
-        width - 2 * cm,
-        1.5 * cm
-    )
-
-    canvas.setFont(
-        "Helvetica",
-        7.5
-    )
-
-    canvas.setFillColor(
-        GREY_TEXT
-    )
-
+    canvas.setFont("Helvetica", 7.5)
+    canvas.setFillColor(GREY_TEXT)
     canvas.drawString(
         2 * cm,
         1.0 * cm,
-        "Western Ghats Sentinel • Tree Cover • Carbon • Conservation"
+        "Western Ghats Sentinel • Species Conservation & Threat Assessment Report"
     )
-
-    canvas.drawRightString(
-        width - 2 * cm,
-        1.0 * cm,
-        f"Page {doc.page}"
-    )
-
+    canvas.drawRightString(width - 2 * cm, 1.0 * cm, f"Page {doc.page}")
     canvas.restoreState()
 
 
 # ============================================================
-# 17. CREATE PDF DOCUMENT
+# 10. CREATE PDF DOCUMENT
 # ============================================================
 
 document = SimpleDocTemplate(
@@ -833,162 +449,61 @@ document = SimpleDocTemplate(
     bottomMargin=2 * cm
 )
 
-
 story = []
 
 
 # ============================================================
-# 18. COVER PAGE
+# 11. COVER PAGE (SPECIES FOCUSED)
 # ============================================================
 
-story.append(
-    Spacer(
-        1,
-        2.5 * cm
-    )
-)
-
+story.append(Spacer(1, 2 * cm))
 
 cover_content = Table(
     [
-        [
-            Paragraph(
-                "WESTERN GHATS<br/>SENTINEL",
-                title_style
-            )
-        ],
-        [
-            Paragraph(
-                "Tree Cover • Carbon • Conservation",
-                subtitle_style
-            )
-        ],
-        [
-            Spacer(
-                1,
-                0.8 * cm
-            )
-        ],
-        [
-            Paragraph(
-                "Environmental Intelligence & Data Analytics Report",
-                subtitle_style
-            )
-        ]
+        [Paragraph("WESTERN GHATS SENTINEL", title_style)],
+        [Paragraph("Species Biodiversity & Threat Dynamics Assessment", subtitle_style)],
+        [Spacer(1, 0.6 * cm)],
+        [Paragraph("A Comprehensive Species Risk, IUCN Red List Trajectory & Habitat Loss Analysis", subtitle_style)]
     ],
-    colWidths=[
-        16 * cm
-    ]
+    colWidths=[16 * cm]
 )
-
 
 cover_content.setStyle(
     TableStyle([
-        (
-            "BACKGROUND",
-            (0, 0),
-            (-1, -1),
-            DEEP_GREEN
-        ),
-        (
-            "VALIGN",
-            (0, 0),
-            (-1, -1),
-            "MIDDLE"
-        ),
-        (
-            "ALIGN",
-            (0, 0),
-            (-1, -1),
-            "CENTER"
-        ),
-        (
-            "TOPPADDING",
-            (0, 0),
-            (-1, -1),
-            15
-        ),
-        (
-            "BOTTOMPADDING",
-            (0, 0),
-            (-1, -1),
-            15
-        )
+        ("BACKGROUND", (0, 0), (-1, -1), DEEP_GREEN),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+        ("TOPPADDING", (0, 0), (-1, -1), 18),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 18)
     ])
 )
 
+story.append(cover_content)
+story.append(Spacer(1, 1 * cm))
 
-story.append(
-    cover_content
-)
+story.append(Paragraph("<b>Primary Analytical Focus:</b> Species Conservation Status • Risk Trajectories • Population Trends", body_style))
+story.append(Paragraph("<b>Study Region:</b> Western Ghats Hotspot (Karnataka • Kerala • Tamil Nadu • Goa • Maharashtra)", body_style))
+story.append(Paragraph(f"<b>Contextual Period:</b> {start_year} – {end_year}", body_style))
+story.append(Paragraph(f"<b>Monitored Taxa Count:</b> {total_species_monitored} Endemic & Key Indicator Species", body_style))
 
-story.append(
-    Spacer(
-        1,
-        1 * cm
-    )
-)
-
-
-story.append(
-    Paragraph(
-        "<b>Study Region:</b> Karnataka • Kerala • Tamil Nadu • Goa • Maharashtra",
-        body_style
-    )
-)
-
-story.append(
-    Paragraph(
-        f"<b>Analysis Period:</b> {start_year} – {end_year}",
-        body_style
-    )
-)
-
-story.append(
-    Paragraph(
-        "<b>Analytical Focus:</b> Forest loss • Carbon • Spatial intensity • Conservation",
-        body_style
-    )
-)
-
-story.append(
-    Spacer(
-        1,
-        4 * cm
-    )
-)
-
-story.append(
-    Paragraph(
-        "Prepared as a data analytics and environmental intelligence project.",
-        small_style
-    )
-)
-
-story.append(
-    PageBreak()
-)
+story.append(Spacer(1, 3.5 * cm))
+story.append(Paragraph("Prepared by Western Ghats Sentinel Biodiversity Analytics Engine.", small_style))
+story.append(PageBreak())
 
 
 # ============================================================
-# 19. EXECUTIVE SUMMARY
+# 12. EXECUTIVE SUMMARY (SPECIES FOCUSED)
 # ============================================================
 
-story.append(
-    Paragraph(
-        "1. Executive Summary",
-        section_style
-    )
-)
+story.append(Paragraph("1. Executive Summary", section_style))
 
 story.append(
     Paragraph(
         """
-        <b>Western Ghats Sentinel</b> is an interactive environmental
-        analytics project designed to examine tree-cover loss,
-        carbon-related indicators, spatial patterns and conservation
-        information across five states associated with the Western Ghats:
-        Karnataka, Kerala, Tamil Nadu, Goa and Maharashtra.
+        <b>Western Ghats Sentinel</b> is a specialized biodiversity and environmental analytics system 
+        focused on evaluating <b>species conservation status, IUCN Red List risk transitions, population trends, 
+        and habitat deforestation threats</b> across five Western Ghats states: Karnataka, Kerala, Tamil Nadu, 
+        Goa, and Maharashtra.
         """,
         body_style
     )
@@ -997,652 +512,190 @@ story.append(
 story.append(
     Paragraph(
         f"""
-        The available annual dataset covers <b>{start_year}–{end_year}</b>
-        and records approximately <b>{format_number(total_loss)} hectares</b>
-        of tree-cover loss. The average annual loss is approximately
-        <b>{format_number(average_annual_loss)} hectares</b>.
+        The project monitors <b>{total_species_monitored} key species</b> across <b>{status_category_count} IUCN Red List 
+        status categories</b>. Among monitored species, <b>{threatened_species_count}</b> are classified under high-risk 
+        threat categories (Critically Endangered, Endangered, or Vulnerable). These species face compounding pressure 
+        from ongoing forest loss, which has accumulated to <b>{format_number(total_loss)} hectares</b> across the region.
         """,
         body_style
     )
 )
 
 summary_table_data = [
-    ["Indicator", "Result"],
-    [
-        "Total tree-cover loss",
-        f"{format_number(total_loss)} ha"
-    ],
-    [
-        "Average annual loss",
-        f"{format_number(average_annual_loss)} ha"
-    ],
-    [
-        "Peak loss year",
-        str(peak_year)
-    ],
-    [
-        "Peak annual loss",
-        f"{format_number(peak_loss)} ha"
-    ],
-    [
-        "Highest total-loss state",
-        highest_loss_state
-    ],
-    [
-        "Highest loss-intensity state",
-        highest_intensity_state
-    ],
-    [
-        "Highest emissions state",
-        highest_emissions_state
-    ],
-    [
-        "Species represented",
-        str(species_count)
-    ]
+    ["Biodiversity & Environmental Indicator", "Observed Value"],
+    ["Total Monitored Species", f"{total_species_monitored} species"],
+    ["Threatened Species (CR + EN + VU)", f"{threatened_species_count} species"],
+    ["Critically Endangered (CR) Species", f"{critically_endangered_count} species"],
+    ["Endangered (EN) Species", f"{endangered_count} species"],
+    ["Vulnerable (VU) Species", f"{vulnerable_count} species"],
+    ["Recorded Species Status Transitions", f"{total_transitions} status shifts"],
+    ["Declining Species Population Trends", f"{declining_species_count} species"],
+    ["Total Regional Tree-Cover Loss", f"{format_number(total_loss)} ha"],
+    ["Highest Forest-Loss Intensity State", highest_intensity_state]
 ]
 
-
-summary_table = Table(
-    summary_table_data,
-    colWidths=[
-        8 * cm,
-        8 * cm
-    ]
-)
-
-
+summary_table = Table(summary_table_data, colWidths=[8.5 * cm, 7.5 * cm])
 summary_table.setStyle(
     TableStyle([
-        (
-            "BACKGROUND",
-            (0, 0),
-            (-1, 0),
-            FOREST_GREEN
-        ),
-        (
-            "TEXTCOLOR",
-            (0, 0),
-            (-1, 0),
-            WHITE
-        ),
-        (
-            "FONTNAME",
-            (0, 0),
-            (-1, 0),
-            "Helvetica-Bold"
-        ),
-        (
-            "FONTNAME",
-            (0, 1),
-            (0, -1),
-            "Helvetica-Bold"
-        ),
-        (
-            "BACKGROUND",
-            (0, 1),
-            (-1, -1),
-            LIGHT_GREY
-        ),
-        (
-            "GRID",
-            (0, 0),
-            (-1, -1),
-            0.4,
-            WHITE
-        ),
-        (
-            "FONTSIZE",
-            (0, 0),
-            (-1, -1),
-            9
-        ),
-        (
-            "TOPPADDING",
-            (0, 0),
-            (-1, -1),
-            7
-        ),
-        (
-            "BOTTOMPADDING",
-            (0, 0),
-            (-1, -1),
-            7
-        )
+        ("BACKGROUND", (0, 0), (-1, 0), FOREST_GREEN),
+        ("TEXTCOLOR", (0, 0), (-1, 0), WHITE),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTNAME", (0, 1), (0, -1), "Helvetica-Bold"),
+        ("BACKGROUND", (0, 1), (-1, -1), LIGHT_GREY),
+        ("GRID", (0, 0), (-1, -1), 0.4, WHITE),
+        ("FONTSIZE", (0, 0), (-1, -1), 8.5),
+        ("TOPPADDING", (0, 0), (-1, -1), 6),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 6)
     ])
 )
 
-
-story.append(
-    summary_table
-)
+story.append(summary_table)
 
 
 # ============================================================
-# 20. PROJECT OBJECTIVE
+# 13. SPECIES BIODIVERSITY & RISK ANALYSIS (CORE SECTION)
 # ============================================================
 
-story.append(
-    Paragraph(
-        "2. Project Objective",
-        section_style
-    )
-)
+story.append(Paragraph("2. Species Biodiversity & Conservation Status", section_style))
 
 story.append(
     Paragraph(
         """
-        The project transforms environmental datasets into an
-        interactive analytical system that allows users to investigate
-        forest-loss patterns, compare states, understand normalized
-        spatial intensity, examine carbon-related indicators and
-        explore conservation-status information.
+        The Western Ghats is one of the world's eight 'hottest hotspots' of biological diversity, harboring 
+        thousands of endemic flora and fauna species. This analysis evaluates the conservation status 
+        distribution using historical and contemporary IUCN Red List assessment records.
         """,
         body_style
     )
 )
 
-story.append(
-    Paragraph(
-        "Primary objectives",
-        subsection_style
+story.append(Paragraph("IUCN Red List Category Breakdown", subsection_style))
+
+if status_distribution:
+    status_rows = [["IUCN Status Category", "Species Count", "Percentage of Monitored Taxa"]]
+    for status_cat, count in status_distribution.items():
+        pct = (count / total_species_monitored * 100) if total_species_monitored > 0 else 0
+        status_rows.append([str(status_cat), str(count), f"{pct:.1f}%"])
+
+    status_table = Table(status_rows, colWidths=[7 * cm, 4.5 * cm, 4.5 * cm])
+    status_table.setStyle(
+        TableStyle([
+            ("BACKGROUND", (0, 0), (-1, 0), DEEP_GREEN),
+            ("TEXTCOLOR", (0, 0), (-1, 0), WHITE),
+            ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+            ("BACKGROUND", (0, 1), (-1, -1), LIGHT_GREY),
+            ("GRID", (0, 0), (-1, -1), 0.4, WHITE),
+            ("FONTSIZE", (0, 0), (-1, -1), 8.5),
+            ("TOPPADDING", (0, 0), (-1, -1), 5),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 5)
+        ])
     )
-)
-
-
-objectives = [
-    "Measure annual tree-cover loss across the available study period.",
-    "Compare tree-cover loss between the five study states.",
-    "Normalize loss using state-level area to provide spatial intensity.",
-    "Examine carbon and CO₂-related indicators associated with forest loss.",
-    "Explore temporal conservation-status information.",
-    "Investigate statistical relationships and lagged associations.",
-    "Present the results through an interactive Streamlit dashboard."
-]
-
-
-for item in objectives:
-
-    story.append(
-        Paragraph(
-            f"• {item}",
-            bullet_style
-        )
-    )
-
-
-# ============================================================
-# 21. RESEARCH QUESTIONS
-# ============================================================
-
-story.append(
-    Paragraph(
-        "3. Research Questions",
-        section_style
-    )
-)
-
-
-research_questions = [
-    "How has tree-cover loss changed over the analysis period?",
-    "How does forest loss differ among the five study states?",
-    "Which states show greater loss intensity after area normalization?",
-    "How are tree-cover loss and carbon-related indicators associated?",
-    "What temporal patterns are visible in conservation-status data?",
-    "Are there observable lagged relationships between environmental indicators?",
-    "What can the available datasets reveal, and what are their analytical boundaries?"
-]
-
-
-for question in research_questions:
-
-    story.append(
-        Paragraph(
-            f"• {question}",
-            bullet_style
-        )
-    )
-
-
-# ============================================================
-# 22. STUDY REGION
-# ============================================================
-
-story.append(
-    Paragraph(
-        "4. Study Region",
-        section_style
-    )
-)
-
-story.append(
-    Paragraph(
-        """
-        The geographical focus of this project is the Western Ghats
-        study region represented through five Indian states:
-        <b>Karnataka, Kerala, Tamil Nadu, Goa and Maharashtra</b>.
-        """,
-        body_style
-    )
-)
-
-story.append(
-    Paragraph(
-        """
-        The spatial component uses polygon boundaries representing
-        the study states. District-level boundary information is also
-        available in the underlying spatial data; however, the
-        tree-cover-loss observations used for the principal state-level
-        analysis are aggregated at the state level.
-        """,
-        body_style
-    )
-)
-
-story.append(
-    Paragraph(
-        """
-        Therefore, state-level results should not be interpreted as
-        district-level tree-cover-loss estimates.
-        """,
-        body_style
-    )
-)
-
-
-# ============================================================
-# 23. DATASET ARCHITECTURE
-# ============================================================
-
-story.append(
-    Paragraph(
-        "5. Data & Dataset Architecture",
-        section_style
-    )
-)
-
-
-dataset_rows = [
-    [
-        "Dataset",
-        "Analytical purpose"
-    ],
-    [
-        "FOREST_RAW_DATA.csv",
-        "Underlying forest/environmental observations"
-    ],
-    [
-        "ANNUAL_TREE_COVER_LOSS.csv",
-        "Annual tree-cover-loss analysis"
-    ],
-    [
-        "STATE_YEAR_TREE_LOSS.csv",
-        "State-by-year forest-loss analysis"
-    ],
-    [
-        "FINAL_STATE_ANALYSIS.csv",
-        "State-level environmental indicators"
-    ],
-    [
-        "SPECIES_STATUS_HISTORY.csv",
-        "Historical species conservation-status records"
-    ],
-    [
-        "SPECIES_STATUS_TRENDS.csv",
-        "Species-status trend analysis"
-    ],
-    [
-        "SPECIES_STATUS_TRANSITIONS.csv",
-        "Conservation-status transition analysis"
-    ],
-    [
-        "LAG_ANALYSIS.csv",
-        "Lagged relationship analysis"
-    ],
-    [
-        "map_complete.geojson",
-        "Spatial boundary and mapping layer"
-    ]
-]
-
-
-dataset_table = Table(
-    dataset_rows,
-    colWidths=[
-        7 * cm,
-        9 * cm
-    ]
-)
-
-
-dataset_table.setStyle(
-    TableStyle([
-        (
-            "BACKGROUND",
-            (0, 0),
-            (-1, 0),
-            FOREST_GREEN
-        ),
-        (
-            "TEXTCOLOR",
-            (0, 0),
-            (-1, 0),
-            WHITE
-        ),
-        (
-            "FONTNAME",
-            (0, 0),
-            (-1, 0),
-            "Helvetica-Bold"
-        ),
-        (
-            "BACKGROUND",
-            (0, 1),
-            (-1, -1),
-            LIGHT_GREY
-        ),
-        (
-            "GRID",
-            (0, 0),
-            (-1, -1),
-            0.4,
-            WHITE
-        ),
-        (
-            "VALIGN",
-            (0, 0),
-            (-1, -1),
-            "TOP"
-        ),
-        (
-            "FONTSIZE",
-            (0, 0),
-            (-1, -1),
-            8.5
-        ),
-        (
-            "TOPPADDING",
-            (0, 0),
-            (-1, -1),
-            6
-        ),
-        (
-            "BOTTOMPADDING",
-            (0, 0),
-            (-1, -1),
-            6
-        )
-    ])
-)
-
-
-story.append(
-    dataset_table
-)
-
-
-# ============================================================
-# 24. DATA PREPARATION
-# ============================================================
-
-story.append(
-    Paragraph(
-        "6. Data Preparation & Validation",
-        section_style
-    )
-)
-
-story.append(
-    Paragraph(
-        """
-        Data preparation involved loading the source datasets,
-        standardizing analytical fields, aggregating state-level
-        observations and preparing spatial information for visualization.
-        """,
-        body_style
-    )
-)
-
-story.append(
-    Paragraph(
-        "Spatial validation",
-        subsection_style
-    )
-)
-
-story.append(
-    Paragraph(
-        """
-        A key spatial-validation step was required because the original
-        geographic data contained multiple district polygons while the
-        tree-cover-loss values were available at state level.
-        Directly joining state-level totals to district geometries would
-        repeat the same state value across multiple polygons.
-        """,
-        body_style
-    )
-)
-
-story.append(
-    Paragraph(
-        """
-        To address this, district geometries were dissolved into a
-        single polygon per state before the state-level environmental
-        totals were joined. This prevents duplicated state totals in
-        the mapped analysis.
-        """,
-        body_style
-    )
-)
-story.append(
-    Paragraph(
-        """
-        Area calculations use an equal-area coordinate reference system
-        so that the normalized loss-intensity indicator is based on
-        projected area rather than unprojected geographic coordinates.
-        """,
-        body_style
-    )
-)
-
-
-# ============================================================
-# 25. SPATIAL METHODOLOGY
-# ============================================================
-
-story.append(
-    Paragraph(
-        "7. Spatial Methodology",
-        section_style
-    )
-)
-
-spatial_methods = [
-    "State geometries are dissolved before state-level totals are joined.",
-    "Area is calculated using an equal-area coordinate reference system.",
-    "Loss intensity is expressed as tree-cover loss per 1,000 km².",
-    "Carbon-related indicators are displayed alongside forest-loss measures.",
-    "The spatial explorer provides state-level visual comparison."
-]
-
-
-for method in spatial_methods:
-
-    story.append(
-        Paragraph(
-            f"• {method}",
-            bullet_style
-        )
-    )
-
-
-# ============================================================
-# 26. FOREST LOSS ANALYSIS
-# ============================================================
-
-story.append(
-    Paragraph(
-        "8. Forest-Loss Analysis",
-        section_style
-    )
-)
-
-story.append(
-    Paragraph(
-        f"""
-        Across the available annual data, the project records
-        approximately <b>{format_number(total_loss)} hectares</b> of
-        tree-cover loss during the analysis period. The average annual
-        loss is approximately <b>{format_number(average_annual_loss)}
-        hectares</b>.
-        """,
-        body_style
-    )
-)
-
-story.append(
-    Paragraph(
-        f"""
-        The highest annual loss occurs in <b>{peak_year}</b>, with
-        approximately <b>{format_number(peak_loss)} hectares</b>
-        recorded for that year.
-        """,
-        body_style
-    )
-)
-
-story.append(
-    Paragraph(
-        f"""
-        At the state level, <b>{highest_loss_state}</b> records the
-        highest total tree-cover loss in the available state-level
-        analysis, at approximately
-        <b>{format_number(highest_loss_value)} hectares</b>.
-        """,
-        body_style
-    )
-)
-
-
-# ============================================================
-# 27. CARBON & EMISSIONS
-# ============================================================
-
-story.append(
-    Paragraph(
-        "9. Carbon & Emissions Analysis",
-        section_style
-    )
-)
-
-story.append(
-    Paragraph(
-        f"""
-        The state-level dataset includes estimated emissions indicators
-        associated with the environmental analysis. Within that dataset,
-        <b>{highest_emissions_state}</b> records the highest total
-        emissions value, approximately
-        <b>{format_number(highest_emissions_value)} Mg</b>.
-        """,
-        body_style
-    )
-)
-
-
-if spearman_correlation is not None:
-
-    story.append(
-        Paragraph(
-            f"""
-            The available annual data produces a Spearman correlation
-            of approximately <b>{spearman_correlation:.3f}</b> between
-            tree-cover loss and the identified emissions indicator.
-            """,
-            body_style
-        )
-    )
-
+    story.append(status_table)
 else:
-
-    story.append(
-        Paragraph(
-            """
-            A directly compatible annual emissions column was not
-            identified for the automated annual correlation calculation.
-            The state-level emissions indicators remain available for
-            descriptive comparison.
-            """,
-            body_style
-        )
-    )
+    story.append(Paragraph("Species status breakdown data is currently unavailable.", body_style))
 
 
-if pearson_correlation is not None:
+# ============================================================
+# 14. SPECIES TRANSITION & THREAT DYNAMICS
+# ============================================================
 
-    story.append(
-        Paragraph(
-            f"""
-            The corresponding Pearson correlation is approximately
-            <b>{pearson_correlation:.3f}</b>.
-            """,
-            body_style
-        )
-    )
-
+story.append(Paragraph("3. Species Status Transitions & Escalation", section_style))
 
 story.append(
     Paragraph(
         """
-        Correlation describes statistical association. It does not by
-        itself establish that one environmental variable causes another.
+        Tracking changes in species risk categories over time provides vital early warning signals for conservation. 
+        A negative transition (e.g., Vulnerable to Endangered) indicates worsening habitat conditions, reduced 
+        population viability, or increased anthropogenic pressure.
         """,
         body_style
     )
 )
 
+if not species_transitions_df.empty and trans_species_col and trans_from_col and trans_to_col:
+    story.append(Paragraph("Key Monitored Conservation Transitions", subsection_style))
+    
+    trans_rows = [["Species Name", "Previous Status", "New Assessment Status"]]
+    sample_trans = species_transitions_df.dropna(subset=[trans_species_col, trans_from_col, trans_to_col]).head(10)
+    
+    for _, r in sample_trans.iterrows():
+        trans_rows.append([
+            str(r[trans_species_col]),
+            str(r[trans_from_col]),
+            str(r[trans_to_col])
+        ])
+
+    trans_table = Table(trans_rows, colWidths=[6.5 * cm, 4.75 * cm, 4.75 * cm])
+    trans_table.setStyle(
+        TableStyle([
+            ("BACKGROUND", (0, 0), (-1, 0), FOREST_GREEN),
+            ("TEXTCOLOR", (0, 0), (-1, 0), WHITE),
+            ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+            ("BACKGROUND", (0, 1), (-1, -1), LIGHT_GREY),
+            ("GRID", (0, 0), (-1, -1), 0.4, WHITE),
+            ("FONTSIZE", (0, 0), (-1, -1), 8.5),
+            ("TOPPADDING", (0, 0), (-1, -1), 5),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 5)
+        ])
+    )
+    story.append(trans_table)
+else:
+    story.append(Paragraph("Detailed species status transition records were not detected in the dataset.", body_style))
+
 
 # ============================================================
-# 28. CONSERVATION ANALYSIS
+# 15. POPULATION TRENDS & VULNERABILITY
 # ============================================================
+
+story.append(Paragraph("4. Species Population Trends", section_style))
 
 story.append(
     Paragraph(
-        "10. Conservation Analysis",
-        section_style
+        f"""
+        Evaluating population directionalities reveals underlying ecosystem health. Of the species evaluated 
+        in the trends dataset, <b>{declining_species_count} species</b> show declining population trajectories, 
+        while <b>{stable_species_count} species</b> remain stable and <b>{increasing_species_count} species</b> show positive recovery.
+        """,
+        body_style
+    )
+)
+
+trend_summary_points = [
+    f"<b>Declining Populations:</b> {declining_species_count} species are experiencing ongoing numbers contraction.",
+    f"<b>Stable Populations:</b> {stable_species_count} species maintain steady population baselines.",
+    f"<b>Recovering/Increasing Taxa:</b> {increasing_species_count} species benefit from active conservation interventions."
+]
+
+for pt in trend_summary_points:
+    story.append(Paragraph(f"• {pt}", bullet_style))
+
+
+# ============================================================
+# 16. HABITAT DEFORESTATION & SPECIES THREAT OVERLAY
+# ============================================================
+
+story.append(PageBreak())
+
+story.append(Paragraph("5. Forest Loss & Habitat Pressure Overlay", section_style))
+
+story.append(
+    Paragraph(
+        f"""
+        Tree-cover loss represents a primary driver of habitat fragmentation, territorial displacement, 
+        and population isolation for endemic species in the Western Ghats. Between <b>{start_year}</b> and 
+        <b>{end_year}</b>, total tree-cover loss reached <b>{format_number(total_loss)} hectares</b>, averaging 
+        <b>{format_number(average_annual_loss)} hectares per year</b>.
+        """,
+        body_style
     )
 )
 
 story.append(
     Paragraph(
         f"""
-        The conservation component contains historical species-status
-        information representing approximately <b>{species_count}
-        unique species</b> across <b>{status_category_count}
-        status categories</b> in the available history dataset.
-        """,
-        body_style
-    )
-)
-
-story.append(
-    Paragraph(
-        """
-        The dashboard examines status distributions, historical
-        records, conservation trajectories and status transitions
-        where supported by the available datasets.
-        """,
-        body_style
-    )
-)
-
-story.append(
-    Paragraph(
-        """
-        These records provide temporal conservation context but do not
-        establish that forest loss caused a particular species-status
-        change. Species geographic-range information is not included
-        in the analytical dataset, so direct habitat-loss attribution
-        cannot be established from these records alone.
+        The highest annual forest loss occurred in <b>{peak_year}</b> ({format_number(peak_loss)} ha lost). 
+        Among the study states, <b>{highest_loss_state}</b> experienced the highest total loss ({format_number(highest_loss_value)} ha), 
+        while <b>{highest_intensity_state}</b> demonstrated the greatest normalized spatial loss intensity.
         """,
         body_style
     )
@@ -1650,561 +703,165 @@ story.append(
 
 
 # ============================================================
-# 29. RELATIONSHIP & LAG ANALYSIS
+# 17. RESEARCH QUESTIONS (SPECIES FOCUS)
 # ============================================================
 
-story.append(
-    Paragraph(
-        "11. Relationship & Lag Analysis",
-        section_style
-    )
-)
+story.append(Paragraph("6. Key Research & Conservation Questions", section_style))
 
-relationship_points = [
-    "Annual tree-cover loss and emissions are compared statistically where compatible fields are available.",
-    "Pearson correlation measures linear association.",
-    "Spearman correlation measures monotonic association.",
-    "State-level relationships provide a cross-sectional comparison.",
-    "Lag analysis examines relationships at different temporal offsets.",
-    "Statistical association is not treated as proof of causation."
+species_research_questions = [
+    "Which endemic species are experiencing the fastest escalation in IUCN risk levels?",
+    "How does regional tree-cover loss correlate with species population declines?",
+    "Which Western Ghats states host the highest density of threatened (CR/EN/VU) species?",
+    "Are species risk level transitions lagged relative to major deforestation spikes?",
+    "What proportions of declining species are represented in current protected area networks?"
 ]
 
-
-for point in relationship_points:
-
-    story.append(
-        Paragraph(
-            f"• {point}",
-            bullet_style
-        )
-    )
+for q in species_research_questions:
+    story.append(Paragraph(f"• {q}", bullet_style))
 
 
 # ============================================================
-# 30. KEY FINDINGS
+# 18. KEY CONSERVATION FINDINGS
 # ============================================================
 
-story.append(
-    PageBreak()
-)
-
-story.append(
-    Paragraph(
-        "12. Key Findings",
-        section_style
-    )
-)
-
+story.append(Paragraph("7. Key Conservation Findings", section_style))
 
 findings = [
     (
-        "Forest-loss scale",
-        f"The available dataset records approximately "
-        f"{format_number(total_loss)} hectares of tree-cover loss."
+        "Monitored Biodiversity",
+        f"The system actively tracks {total_species_monitored} endemic and focal species across {status_category_count} IUCN risk tiers."
     ),
     (
-        "Peak year",
-        f"The highest annual loss occurs in {peak_year}, "
-        f"with approximately {format_number(peak_loss)} hectares."
+        "Threat Level Scale",
+        f"{threatened_species_count} species are currently classified in high-risk IUCN Red List categories (CR, EN, VU)."
     ),
     (
-        "State comparison",
-        f"{highest_loss_state} records the highest total "
-        f"tree-cover loss among the five study states."
+        "Population Contraction",
+        f"{declining_species_count} species exhibit documented declining population trajectories across assessment periods."
     ),
     (
-        "Spatial intensity",
-        f"{highest_intensity_state} records the highest "
-        f"normalized loss intensity in the state-level dataset."
+        "Habitat Deforestation Pressure",
+        f"Accumulated forest loss of {format_number(total_loss)} ha threatens critical corridors, with peak impact in {peak_year}."
     ),
     (
-        "Carbon pressure",
-        f"{highest_emissions_state} records the highest total "
-        f"emissions indicator in the state-level dataset."
-    ),
-    (
-        "Conservation context",
-        f"The conservation history dataset represents approximately "
-        f"{species_count} unique species across "
-        f"{status_category_count} status categories."
+        "Critical Hotspot State",
+        f"{highest_loss_state} accounts for the highest accumulated tree loss, presenting elevated risk to localized endemics."
     )
 ]
 
-
 for title, description in findings:
-
     finding_table = Table(
-        [
-            [
-                Paragraph(
-                    f"<b>{title}</b>",
-                    highlight_style
-                ),
-                Paragraph(
-                    description,
-                    body_style
-                )
-            ]
-        ],
-        colWidths=[
-            4.2 * cm,
-            11.8 * cm
-        ]
+        [[Paragraph(f"<b>{title}</b>", highlight_style), Paragraph(description, body_style)]],
+        colWidths=[4.2 * cm, 11.8 * cm]
     )
 
     finding_table.setStyle(
         TableStyle([
-            (
-                "BACKGROUND",
-                (0, 0),
-                (0, 0),
-                LIGHT_GREEN
-            ),
-            (
-                "BACKGROUND",
-                (1, 0),
-                (1, 0),
-                WHITE
-            ),
-            (
-                "BOX",
-                (0, 0),
-                (-1, -1),
-                0.5,
-                colors.HexColor("#D6DED7")
-            ),
-            (
-                "VALIGN",
-                (0, 0),
-                (-1, -1),
-                "TOP"
-            ),
-            (
-                "LEFTPADDING",
-                (0, 0),
-                (-1, -1),
-                9
-            ),
-            (
-                "RIGHTPADDING",
-                (0, 0),
-                (-1, -1),
-                9
-            ),
-            (
-                "TOPPADDING",
-                (0, 0),
-                (-1, -1),
-                8
-            ),
-            (
-                "BOTTOMPADDING",
-                (0, 0),
-                (-1, -1),
-                8
-            )
+            ("BACKGROUND", (0, 0), (0, 0), LIGHT_GREEN),
+            ("BACKGROUND", (1, 0), (1, 0), WHITE),
+            ("BOX", (0, 0), (-1, -1), 0.5, colors.HexColor("#D6DED7")),
+            ("VALIGN", (0, 0), (-1, -1), "TOP"),
+            ("LEFTPADDING", (0, 0), (-1, -1), 8),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+            ("TOPPADDING", (0, 0), (-1, -1), 6),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 6)
         ])
     )
 
-    story.append(
-        finding_table
-    )
-
-    story.append(
-        Spacer(
-            1,
-            0.25 * cm
-        )
-    )
+    story.append(finding_table)
+    story.append(Spacer(1, 0.2 * cm))
 
 
 # ============================================================
-# 31. APPLICATION ARCHITECTURE
+# 19. LIMITATIONS & FUTURE SCOPE
 # ============================================================
 
-story.append(
-    Paragraph(
-        "13. Application Architecture",
-        section_style
-    )
-)
+story.append(Paragraph("8. Conservation Analytical Scope & Future Work", section_style))
 
-
-architecture_rows = [
-    [
-        "Layer",
-        "Technology / implementation"
-    ],
-    [
-        "Application interface",
-        "Streamlit"
-    ],
-    [
-        "Data processing",
-        "Python + Pandas"
-    ],
-    [
-        "Spatial analysis",
-        "GeoPandas"
-    ],
-    [
-        "Interactive visualization",
-        "Plotly"
-    ],
-    [
-        "Spatial data",
-        "GeoJSON"
-    ],
-    [
-        "Statistical analysis",
-        "Pandas / numerical analysis"
-    ],
-    [
-        "Report generation",
-        "ReportLab"
-    ],
-    [
-        "Data storage",
-        "CSV + GeoJSON"
-    ]
-]
-
-
-architecture_table = Table(
-    architecture_rows,
-    colWidths=[
-        6 * cm,
-        10 * cm
-    ]
-)
-
-
-architecture_table.setStyle(
-    TableStyle([
-        (
-            "BACKGROUND",
-            (0, 0),
-            (-1, 0),
-            FOREST_GREEN
-        ),
-        (
-            "TEXTCOLOR",
-            (0, 0),
-            (-1, 0),
-            WHITE
-        ),
-        (
-            "FONTNAME",
-            (0, 0),
-            (-1, 0),
-            "Helvetica-Bold"
-        ),
-        (
-            "BACKGROUND",
-            (0, 1),
-            (-1, -1),
-            LIGHT_GREY
-        ),
-        (
-            "GRID",
-            (0, 0),
-            (-1, -1),
-            0.4,
-            WHITE
-        ),
-        (
-            "FONTSIZE",
-            (0, 0),
-            (-1, -1),
-            9
-        ),
-        (
-            "TOPPADDING",
-            (0, 0),
-            (-1, -1),
-            7
-        ),
-        (
-            "BOTTOMPADDING",
-            (0, 0),
-            (-1, -1),
-            7
-        )
-    ])
-)
-
-
-story.append(
-    architecture_table
-)
-
-
-# ============================================================
-# 32. TECHNOLOGY STACK
-# ============================================================
-
-story.append(
-    Paragraph(
-        "14. Technology Stack",
-        section_style
-    )
-)
-
-
-technologies = [
-    "Python",
-    "Streamlit",
-    "Pandas",
-    "GeoPandas",
-    "Plotly",
-    "ReportLab",
-    "CSV",
-    "GeoJSON",
-    "HTML/CSS styling"
-]
-
-
-for technology in technologies:
-
-    story.append(
-        Paragraph(
-            f"• {technology}",
-            bullet_style
-        )
-    )
-
-
-# ============================================================
-# 33. LIMITATIONS
-# ============================================================
-
-story.append(
-    PageBreak()
-)
-
-story.append(
-    Paragraph(
-        "15. Research Limitations",
-        section_style
-    )
-)
-
-
+story.append(Paragraph("Methodological Boundaries", subsection_style))
 limitations = [
-    "Tree-cover-loss observations are represented at state level.",
-    "State-level results should not be interpreted as district-level estimates.",
-    "Correlation does not establish causation.",
-    "Lagged statistical relationships do not independently establish causal mechanisms.",
-    "The conservation dataset does not contain species geographic-range information.",
-    "Species-status associations therefore cannot be treated as direct habitat-loss attribution.",
-    "Environmental indicators may represent different measurement concepts and should be interpreted according to their source definitions.",
-    "The dashboard is an analytical representation of the available datasets and is not a complete ecological assessment of the Western Ghats."
+    "Species conservation status records reflect periodic IUCN evaluations rather than real-time annual censuses.",
+    "Spatial overlay relies on state-aggregated forest loss; localized micro-habitat deforestation requires high-resolution spatial buffers.",
+    "Conservation status shifts cannot be attributed solely to tree loss without incorporating poaching, invasive species, and climate variables."
 ]
+for lim in limitations:
+    story.append(Paragraph(f"• {lim}", bullet_style))
 
-
-for limitation in limitations:
-
-    story.append(
-        Paragraph(
-            f"• {limitation}",
-            bullet_style
-        )
-    )
-
-
-# ============================================================
-# 34. FUTURE SCOPE
-# ============================================================
-
-story.append(
-    Paragraph(
-        "16. Future Scope",
-        section_style
-    )
-)
-
-
-future_scope = [
-    "Integrate additional satellite-derived environmental indicators.",
-    "Add district-level forest-loss data where compatible datasets are available.",
-    "Integrate species geographic-range or habitat-distribution data.",
-    "Add protected-area and biodiversity-hotspot boundaries.",
-    "Introduce more advanced spatial statistics.",
-    "Develop automated data-refresh pipelines.",
-    "Add scenario modelling and forecasting where scientifically appropriate.",
-    "Deploy the dashboard publicly through Streamlit Community Cloud.",
-    "Enable user-selectable report generation directly from the dashboard."
+story.append(Paragraph("Future Research Scope", subsection_style))
+future_items = [
+    "Incorporate spatial species distribution models (SDMs) and range map overlays.",
+    "Integrate bioacoustic and ecoacoustic monitoring metrics for automated species presence detection.",
+    "Calculate species-specific habitat fragmentation indices based on high-resolution canopy cover data."
 ]
-
-
-for item in future_scope:
-
-    story.append(
-        Paragraph(
-            f"• {item}",
-            bullet_style
-        )
-    )
+for fut in future_items:
+    story.append(Paragraph(f"• {fut}", bullet_style))
 
 
 # ============================================================
-# 35. CONCLUSION
+# 20. CONCLUSION
 # ============================================================
 
-story.append(
-    Paragraph(
-        "17. Conclusion",
-        section_style
-    )
-)
+story.append(Paragraph("9. Conclusion", section_style))
 
 story.append(
     Paragraph(
         """
-        Western Ghats Sentinel demonstrates how environmental datasets
-        can be transformed into an interactive data-storytelling and
-        analytical system. The project combines forest-loss analysis,
-        spatial comparison, carbon-related indicators, conservation
-        information and statistical relationships within a single
-        application.
+        The <b>Western Ghats Sentinel</b> report provides an integrated analysis centered on species biodiversity 
+        and conservation urgency. By combining species Red List trajectories, status transitions, and population trends 
+        with regional forest-loss patterns, the platform delivers actionable environmental intelligence designed to 
+        support biodiversity conservation and ecological management in the Western Ghats.
         """,
         body_style
     )
 )
 
-story.append(
-    Paragraph(
-        """
-        Rather than relying on a single environmental indicator, the
-        project combines multiple measures to provide broader analytical
-        context. The methodology also distinguishes observed patterns
-        and statistical associations from causal conclusions.
-        """,
-        body_style
-    )
-)
-
-story.append(
-    Paragraph(
-        """
-        The resulting system provides a foundation for further
-        environmental analytics, spatial research and data-driven
-        conservation investigation.
-        """,
-        body_style
-    )
-
-)
-# ============================================================
-# 36. FINAL PROJECT BOX
-# ============================================================
-
-story.append(
-    Spacer(
-        1,
-        1 * cm
-    )
-)
-
+story.append(Spacer(1, 0.5 * cm))
 
 final_box = Table(
-    [
-        [
-            Paragraph(
-                "<b>WESTERN GHATS SENTINEL</b><br/>"
-                "Tree Cover • Carbon • Conservation",
-                highlight_style
-            )
-        ]
-    ],
-    colWidths=[
-        16 * cm
-    ]
+    [[
+        Paragraph(
+            "<b>WESTERN GHATS SENTINEL</b><br/>"
+            "Species Biodiversity • Threat Trajectories • Habitat Conservation",
+            highlight_style
+        )
+    ]],
+    colWidths=[16 * cm]
 )
-
 
 final_box.setStyle(
     TableStyle([
-        (
-            "BACKGROUND",
-            (0, 0),
-            (-1, -1),
-            LIGHT_GREEN
-        ),
-        (
-            "BOX",
-            (0, 0),
-            (-1, -1),
-            0.7,
-            FOREST_GREEN
-        ),
-        (
-            "LEFTPADDING",
-            (0, 0),
-            (-1, -1),
-            14
-        ),
-        (
-            "RIGHTPADDING",
-            (0, 0),
-            (-1, -1),
-            14
-        ),
-        (
-            "TOPPADDING",
-            (0, 0),
-            (-1, -1),
-            12
-        ),
-        (
-            "BOTTOMPADDING",
-            (0, 0),
-            (-1, -1),
-            12
-        )
+        ("BACKGROUND", (0, 0), (-1, -1), LIGHT_GREEN),
+        ("BOX", (0, 0), (-1, -1), 0.7, FOREST_GREEN),
+        ("LEFTPADDING", (0, 0), (-1, -1), 12),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 12),
+        ("TOPPADDING", (0, 0), (-1, -1), 10),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 10)
     ])
 )
 
-
-story.append(
-    final_box
-)
+story.append(final_box)
 
 
 # ============================================================
-# 37. BUILD THE PDF
+# 21. BUILD THE PDF
 # ============================================================
 
 try:
-
     document.build(
         story,
         onFirstPage=add_page_number,
         onLaterPages=add_page_number
     )
-
-    print()
-    print("=" * 60)
+    print("\n" + "=" * 60)
     print("WESTERN GHATS SENTINEL")
-    print("PROJECT REPORT")
+    print("SPECIES-FOCUSED REPORT GENERATED SUCCESSFULLY")
     print("=" * 60)
-    print()
-    print("SUCCESS!")
-    print()
-    print("Your PDF has been generated at:")
-    print()
-    print(OUTPUT_FILE)
-    print()
+    print(f"\nPDF generated at:\n{OUTPUT_FILE}\n")
     print("=" * 60)
 
 except Exception as error:
-
-    print()
-    print("=" * 60)
+    print("\n" + "=" * 60)
     print("REPORT GENERATION FAILED")
     print("=" * 60)
-    print()
-    print("Error:")
-    print(error)
-    print()
+    print(f"\nError:\n{error}\n")
     print("=" * 60)
