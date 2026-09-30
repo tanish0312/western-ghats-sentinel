@@ -610,10 +610,31 @@ pages = {
         ),
 
         st.Page(
+            "pages/3_Conservation.py",
+            title="Conservation",
+            icon="🐘",
+            url_path="conservation"
+        ),
+
+        st.Page(
+            "pages/10_Species_Gallery.py",
+            title="Species Gallery",
+            icon="🐆",
+            url_path="species-gallery"
+        ),
+
+        st.Page(
             "pages/1_Forest_Loss.py",
             title="Forest Loss",
             icon="🌲",
             url_path="forest-loss"
+        ),
+
+        st.Page(
+            "pages/9_District_Hotspots.py",
+            title="District Hotspots",
+            icon="🎯",
+            url_path="district-hotspots"
         ),
 
         st.Page(
@@ -624,17 +645,24 @@ pages = {
         ),
 
         st.Page(
-            "pages/3_Conservation.py",
-            title="Conservation",
-            icon="🐘",
-            url_path="conservation"
-        ),
-
-        st.Page(
             "pages/4_Relationships.py",
             title="Relationships",
             icon="🔗",
             url_path="relationships"
+        ),
+
+        st.Page(
+            "pages/8_Forecast.py",
+            title="Forecast",
+            icon="📈",
+            url_path="forecast"
+        ),
+
+        st.Page(
+            "pages/7_Executive_View.py",
+            title="Executive View",
+            icon="🎯",
+            url_path="executive-view"
         ),
 
         st.Page(
@@ -649,41 +677,11 @@ pages = {
             title="About & Methodology",
             icon="🌿",
             url_path="about"
-        ),
-
-        st.Page(
-            "pages/7_Executive_View.py",
-            title="Executive View",
-            icon="🎯",
-            url_path="executive-view"
-        ),
-
-        st.Page(
-            "pages/8_Forecast.py",
-            title="Forecast",
-            icon="📈",
-            url_path="forecast"
-        ),
-
-        st.Page(
-            "pages/9_District_Hotspots.py",
-            title="District Hotspots",
-            icon="🎯",
-            url_path="district-hotspots"
-        ),
-
-        st.Page(
-         "pages/10_Species_Gallery.py",
-         title="Species Gallery",
-         icon="🐆",
-         url_path="species-gallery"
         )
 
     ]
 
 }
-
-
 # ============================================================
 # RUN APP
 # ============================================================
